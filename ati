@@ -1,0 +1,65 @@
+# Pour faire fonctionner la carte graphique Ati
+
+Après avoir installé les paquets compiz
+et vérifié leur non fonctionnement
+
+j'ai installé ces paquets là
+# aptitude install fglrx-modules-dkms fglrx-atieventsd fglrx-control-qt3 fglrx-glx fglrx-driver fglrx-control fglrx-glx-ia32 fglrx-source
+
+Aucun effet en lançant fglrx
+
+install des paquets compiz pour gnome
+
+
+plug-in flash pour iceweasel
+# aptitude install flashplugin-nonfree
+Les NOUVEAUX paquets suivants vont être installés : 
+  flashplugin-nonfree 
+0 paquets mis à jour, 1 nouvellement installés, 0 à enlever et 0 non mis à jour.
+Il est nécessaire de télécharger 17,9 ko d'archives. Après dépaquetage, 135 ko seront utilisés.
+
+
+
+Ajouter la clé pour virtualBox :
+
+# wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+
+iceweasel 
+# aptitude update
+# aptitude install -t squeeze-backports iceweasel
+# aptitude install iceweasel-l10n-fr
+
+# aptitude update
+# aptitude safe-upgrade
+
+/etc/apt/sources.list
+deb http://mozilla.debian.net/ squeeze-backports iceweasel-release
+
+Ce dépôts n'est pas soutenu officiellement par Debian, les sites officiels de Debian sont en « debian.org ». Mais « debian.net » est disponible pour les développeurs Debian. C'est donc un site officiel « Debian Mozilla team ».
+
+Avec le terminal sous user, téléchargez le fichier .deb :
+jpantinoux@cerbere:~/Téléchargements$ wget -c http://mozilla.debian.net/pkg-mozilla-archive-keyring_1.0_all.deb
+--2012-04-29 00:30:33--  http://mozilla.debian.net/pkg-mozilla-archive-keyring_1.0_all.deb
+Résolution de mozilla.debian.net... 217.196.43.134
+Connexion vers mozilla.debian.net|217.196.43.134|:80...connecté.
+requête HTTP transmise, en attente de la réponse...200 OK
+Longueur: 3414 (3,3K) [application/x-debian-package]
+Sauvegarde en : «pkg-mozilla-archive-keyring_1.0_all.deb»
+
+100%[===========================================================================================================================================================================>] 3 414       --.-K/s   ds 0,002s  
+
+2012-04-29 00:30:33 (1,56 MB/s) - «pkg-mozilla-archive-keyring_1.0_all.deb» sauvegardé [3414/3414]
+
+Installer le paquet téléchargé :
+root@cerbere:/home/jpantinoux/Téléchargements# dpkg -i 11:40 pkg-mozilla-archive-keyring_1.0_all.deb
+
+# aptitude update
+# aptitude safe-upgrade
+# aptitude install iceweasel iceweasel-l10n-fr
+
+aptitude update
+aptitude install -t squeeze-backports libreoffice
+aptitude install -t squeeze-backports libreoffice-emailmerge
+
+
+root@cerbere:~# aptitude install firmware-linux-nonfree

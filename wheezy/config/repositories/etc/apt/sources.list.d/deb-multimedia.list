@@ -1,0 +1,5 @@
+# /etc/apt/sources.list.d/debian-multimedia.list
+
+# Multimédia
+deb http://www.deb-multimedia.org wheezy main non-free
+

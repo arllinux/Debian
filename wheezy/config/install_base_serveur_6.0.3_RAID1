@@ -1,0 +1,464 @@
+#-----------------------------------------
+'Installation de base serveur Debian 6.0.3'
+'RAID1 avec deux disques durs'
+#-----------------------------------------
+
+JPA Février 2012
+
+Installation sur 2 disques durs
+#------------------------------
+
+Téléchargement de l'image netinstall pour i386 ou 64 bits
+
+	http://cdimage.debian.org/cdimage/
+	Pour système 32 bits
+	http://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/6.0.3/i386/iso-cd/firmware-6.0.3-i386-netinst.iso
+
+	Pour système 64 bits
+	http://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/6.0.3/amd64/iso-cd/firmware-6.0.3-amd64-netinst.iso
+
+Installation
+#-----------
+
+Au lancement de l'installation, lors de l'apparition de l'écran graphique
+	Installer boot menu
+		Install
+			Appuyer sur la touche tab
+
+	La ligne suivante apparaît :
+	> /install/amd/vmlinuz vga=788 initrd=/install.amd/initrd.gz -- quiet
+		Il faut rajouter nomodeset après quiet.
+		...gz -- quiet nomodeset
+	# Attention le clavier est qwerty donc pour taper le m, il faut utiliser la touche ,
+
++++++++++++++++++++++++++
+C'est quoi cette option ?
++++++++++++++++++++++++++
+
+	Depuis le noyau 2.6.29, avec l'introduction du Kernel Mode Setting ou KMS,
+	on peut dès le démarrage du noyau Linux configurer DRI/DRM pour piloter l'affichage sans attendre Xorg
+	et avoir une résolution native à l'écran avec accélération.
+	
+	Cela rend inutile, voire conflictuel l'utilisation des modes VGA textes et framebuffers.
+	Pour l'instant, Intel et AMD/Ati supportent KMS, mais il est peu probable qu'Nvidia le fasse avec ses pilotes propriétaires.
+	Il faudra se tourner vers le développement des pilotes nv ou nouveau.
+
+
+Toute la procédure
+#-----------------
+
+Ecrans Ncurses
+	French
+	France
+	Français (fr-latin9)
+
+Si vous venez de redémarrer après avoir fait les manipulations ci-dessous, passer à eth0
+----------------------------------------------------------------------------------------------
+A partir d'ici, si l'ancienne installation était du raid faire ceci pour éliminer tous résidus.
+	Passer en console :
+		Ctrl + Alt + F2
+		# mdadm -Ss
+		Normalement la commande ne doit rien retourner
+		
+		Pour voir comment les disques sont identifiés :
+		# fdisk /dev/sda
+		On voit ici le partitionnement du disque
+		Celui-ci contient 4 partitions dans notre cas
+		Dans la colonne de droite on peut voir "Linux raid autodetect"
+		La précédente installation fonctionnait en RAID
+
+		# fdisk /dev/sdb
+		Normalement similaire à sda
+	
+		# fdisk /dev/sdc
+		Unable to open /dev/sdc
+		On voit ici qu'il n'y a pas de troisième disque et que notre grappe RAID etait composée de 2 disques
+
+		Suppression des partitions RAID sur le premier disque (sda)
+		# mdadm --zero-superblock /dev/sda1
+		# mdadm --zero-superblock /dev/sda2
+		# mdadm --zero-superblock /dev/sda3
+		# mdadm --zero-superblock /dev/sda4
+
+		Suppression des partitions RAID sur le deuxième disque (sdb)
+		# mdadm --zero-superblock /dev/sdb1
+		# mdadm --zero-superblock /dev/sdb2
+		# mdadm --zero-superblock /dev/sdb3
+		# mdadm --zero-superblock /dev/sdb4
+	
+	Ensuite supprimer la table des partitions sur chaque disque
+		# dd if=/dev/zero of=/dev/sda bs=512 count=64
+		# dd if=/dev/zero of=/dev/sdb bs=512 count=64
+		
+	Redémarrer
+----------------------------------------------------------------------------------
+	eth0 : Atheros Communications ...
+	
+	Nom de machine (sur le réseau)
+		tab	--> Continuer
+	Domaine :
+		vide
+		tab	--> Continuer
+	
+	Mot de passe superutilisateur ("root") :
+		tab	--> Continuer
+	Confirmation mot de passe root :
+		tab	--> Continuer
+	Nom complet du nouvel utilisateur :
+		tab	--> Continuer
+	
+	Identifiant pour le compte utilisateur :
+		tab	--> Continuer
+	Mot de passe pour nouvel utilisateur :
+		tab	--> Continuer
+	Confirmation mot de passe utilisateur :
+		tab	--> Continuer
+	
+	Partitionner les disques
+		Manuel
+
+Si l'on a pas effectué le traitement de nettoyage du RAID, il peut subsiter les partitions de la précédente installation
+	Dans ce cas soit on passe en console :
+		# dd if=/dev/zero of=/dev/sda bs=512 count=64
+		pour remttre la table des partitions de ce dique à zéro,
+		soit on supprime les partitions de façon à disposer d'un seul espace vide.
+
+Après le traitement de mise à jour du RAID nous avons ceci :
+	SCSI1 (0,0,0) (sda) - 82.3 GB ATA HDS728080PLAT20
+	SCSI2 (0,0,0) (sdb) - 82.3 GB ATA Hitachi HDS72168
+
+	On se place sur la première ligne :
+		A l'appui sur la touche Entrée
+		"Faut-il créer une nouvelle table des partitions sur ce disque ?"
+		Oui
+	
+	1 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 100 MB
+		Primaire
+		Début
+
+		Utiliser comme :	volume physique pour RAID
+		
+		Fin du paramétrage de cette partition
+
+	2 - Se placer ensuite sur l'espace libre restant de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 2 GB
+		Primaire
+		Début
+
+		Utiliser comme :	volume physique pour RAID
+
+		Fin du paramétrage de cette partition 
+	
+	3 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 10 GB
+		Primaire
+		Début
+
+		Utiliser comme :	volume physique pour RAID
+		
+		Fin du paramétrage de cette partition
+	
+	4 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 70.2 GB (le reste de la place)
+		Primaire
+		Début
+
+		Utiliser comme :	volume physique pour RAID
+		
+		Fin du paramétrage de cette partition
+
+Terminer le partitionnement et appliquer les changements ?
+Confirmation : Oui
+
+Répéter à l'identique l'opéraition pour le deuxième disque
+
+Au final le partitionnement des deux disques doit ressembler à ceci :
+	SCSI1 (0,0,0) (sda) - 82.3 GB ATA HDS728080PLAT20
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+	SCSI1 (0,0,0) (sdb) - 82.3 GB ATA Hitachi HDS72168
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+		
+
+'Configurer le RAID avec gestion logicielle'
+#------------------------------------------
+
+	Appliquer les changements et configurer le RAID ?
+		Oui
+	Créer un périphérique multidisque
+		RAID1
+		Nombre de périphériques actifs pour l'ensemble RAID1
+		2
+		Nombre de périphériques de réserve dans l'ensemble RAID1
+		O
+
+'Assembler les partitions des deux disques'
+#------------------------------------------
+
+Périphériques actifs pour l'ensemble RAID1 :
+	[*] /dev/sda1			(98MB; raid)
+	[ ] /dev/sda2			(1999MB; raid)
+	[ ] /dev/sda3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+	[*] /dev/sdb1			(98MB; raid)
+	[ ] /dev/sdb2			(1999MB; raid)
+	[ ] /dev/sdb3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+
+	Continuer
+
+Créer un périphérique multidisque
+	RAID1
+	Nombre de périphériques actifs pour l'ensemble RAID1
+	2
+	Nombre de périphériques de réserve dans l'ensemble RAID1
+	O
+
+Périphériques actifs pour l'ensemble RAID1 :
+	[*] /dev/sda2			(1999MB; raid)
+	[ ] /dev/sda3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+	[*] /dev/sdb2			(1999MB; raid)
+	[ ] /dev/sdb3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+
+	Continuer
+
+Créer un périphérique multidisque
+	RAID1
+	Nombre de périphériques actifs pour l'ensemble RAID1
+	2
+	Nombre de périphériques de réserve dans l'ensemble RAID1
+	O
+
+Périphériques actifs pour l'ensemble RAID1 :
+	[*] /dev/sda3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+	[*] /dev/sdb3			(10000MB; raid)
+	[ ] /dev/sda4			(70248MB; raid)
+
+	Continuer
+
+Créer un périphérique multidisque
+	RAID1
+	Nombre de périphériques actifs pour l'ensemble RAID1
+	2
+	Nombre de périphériques de réserve dans l'ensemble RAID1
+	O
+
+Périphériques actifs pour l'ensemble RAID1 :
+	[*] /dev/sda4			(70248MB; raid)
+	[*] /dev/sda4			(70248MB; raid)
+
+	Continuer
+
+Terminer
+
+Le résultat doit donner ceci
+	Périphérique RAID1 n° 0 - 98.6 MB Périphérique RAID logiciel
+		n°1		98.5 MB
+				53.8 kB		inutil.
+	Périphérique RAID1 n° 1 - 2.0 GB Linux software RAID Array n°1 Périphérique RAID logiciel
+		n°1		2.0 GB	F	swap	swap
+	Périphérique RAID1 n° 2 - 10.0 GB Périphérique RAID logiciel
+		n°1		10.0 GB
+				57.9 kB		inutil.
+	Périphérique RAID1 n° 0 - 70.2 Périphérique RAID logiciel
+		n°1		70.2 GB
+				57.9 kB		inutil.
+	SCSI1 (0,0,0) (sda) - 82.3 GB ATA HDS728080PLAT20
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+	SCSI1 (0,0,0) (sdb) - 82.3 GB ATA Hitachi HDS72168
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+
+
+Appliquer les points de montage à l'ensemble RAID1
+On pratique de manière classique en appliquant un point de montage à chaque ensemble (partition) RAID
+On doit obtenir ceci :
+	Périphérique RAID1 n° 0 - 98.6 MB Périphérique RAID logiciel
+		n°1		98.5 MB		f	ext2	/boot
+				53.8 kB		inutil.
+	Périphérique RAID1 n° 1 - 2.0 GB Linux software RAID Array n°1 Périphérique RAID logiciel
+		n°1		2.0 GB	F	swap	swap
+	Périphérique RAID1 n° 2 - 10.0 GB Périphérique RAID logiciel
+		n°1		10.0 GB		f	ext4	/
+				57.9 kB		inutil.
+	Périphérique RAID1 n° 0 - 70.2 Périphérique RAID logiciel
+		n°1		70.2 GB		f	ext4	/home
+				57.9 kB		inutil.
+	SCSI1 (0,0,0) (sda) - 82.3 GB ATA HDS728080PLAT20
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+	SCSI1 (0,0,0) (sdb) - 82.3 GB ATA Hitachi HDS72168
+		n° 1	primaire	98.6 MB		K raid
+		n° 2	primaire	2.0 GB		K raid
+		n° 3	primaire	10.0 GB		K raid
+		n° 4	primaire	70.2 GB		K raid
+
+
+Terminer le partitionnement et appliquer les changements
+Oui
+
+
+'Installation du système de base'
+#--------------------------------
+
+L'installeur va maintenant chercher sur internet les éléments indispensables pour contituer le système
+	
+	Pays du mirroir de l'archive
+		France
+		ftp.fr.debian.org
+		Mandataire HTTP
+			Vide
+			Si l'on dispose d'apt-cacher sur un serveur indiquer son adresse ici
+
+	Popularity-contest
+		S'il s'agit d'un test d'installation répondre "non"
+
+	Sélection des logiciels
+		A ce stade seul le système de base est installé.
+		Comme nous ne voulons rien d'autre, il faut décocher ce qui nous est proposé :
+			[ ] Environnement graphique de bureau	
+			[*] ssh
+			[ ] Utilitaires standard du système
+
+			Nous rajoutons par contre ssh qui est indispensable pour communiquer vers d'autres serveurs
+			Continuer
+
+	L'installation de Grub2 nous demande si nous voulons mettre Grub sur le secteur d'amorçage
+			Réponse "Oui" dans le cas d'un seul OS
+
+	Installation terminée
+		Retirer le CD et
+		Continuer
+
+'Au reboot'
+#----------
+
+marge login: root
+Password:
+
+Connaitre le nombre de paquets installé pour cette install de base
+# dpkg -l | wc -l
+192
+
+Quelle place tient le système ?
+# df -h
+/dev/sda3		9,2G	588M	8,2G	7%	/
+Notre système de base occupe 588 Mo
+
+'Ajout des outils de base'
+#-------------------------
+
+	# aptitude install file less ncftp nmap pciutils subversion sysv-rv-conf tree vim
+
+
+'Récupération de ma doc sur subversion'
+#-------------------------------------
+
+	# cd /usr/share
+	# svn co svn://svn.tuxfamily.org/svnroot/slocentos/ubuntu1004/debian
+		Le mot de passe est demandé deux fois :
+		Un pour svn
+		Un pour ssh
+
+'Modification de la console'
+#---------------------------
+	
+	Changer la résolution
+		Il faut ajouter deux lignes dans /etc/default/grub
+			GRUB_GFXMODE=800X600
+			GRUB_GFXPAYLOAD_LINUX=keep
+
+	# update-grub
+
+	
+	Procédure intégrée dans le script suivant____________________
+	Bootsplash
+		Il faut placer l'image au format .tga dans /boot/grub
+	# cd /boot/grub
+	# cp /usr/share/debian/bootsplash/maboul.tga .
+	# update-grub
+	______________________________________________________________
+	
+	Configuration console
+	# cd /usr/share/debian/config/commandes_couleur/
+	# ./script_install_invites.sh
+
+'Installer Grub sur le ou les autres disques'
+#--------------------------------------------
+
+# dpkg-reconfigure grub-pc
+	[*] /dev/sda (82348 Mo....)
+	[*] /dev/sdb (82348 Mo....)
+	
+Installation finished. No error reported	
+Installation finished. No error reported
+Generating grub.cfg ...
+Found background image: maboul.tga
+Found linux image: /boot/vmlinuz-2.6.32-5-amd64
+Found initrd image: /boot/intird.img-2.6.32-5-amd64
+done
+
+
+'Empècher le chargement du module pcspkr (son)'
+#----------------------------------------------
+
+	Au démarrage le message suivant apparaît :
+	Waiting for /dev to be fully populated... // Error: Driver 'pcspkr' is already registered, aborting...
+	Il faut blacklister ce module pour régler le problème
+	# vim /etc/modprobe.d/blacklist.conf
+
+		# Supprime le message lors du démarrage
+		blacklist pcspkr
+
+'Configurer les dépôts'
+#----------------------
+
+	Modifier le fichier /etc/apt/sources.list
+	'Mettre ici le contenu du fichier'
+
+'Redemarrage'
+#------------
+
+# dpkg -l | wc -l
+229
+# df -h
+/dev/sda3		9,2G	702M	8,1G	8%	/
+# free -m
+28 MB
+
+
+'Vérifier si les disques sont syncronisés'
+#-----------------------------------------
+
+# watch cat /proc/mdstat
+Commande avec barre de progression
+
+# cat /proc/mdstat
+La même en statique
+
+
+--> Fin <--

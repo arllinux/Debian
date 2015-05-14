@@ -1,0 +1,53 @@
+# -----------------------------------------------------------
+' Installation de apt-cacher '
+
+|-- apt-cacher_HOWTO
+`-- etc
+    |-- apt
+    |   `-- apt.conf		--> Dans machines clientes (pointe vers serveur)
+    |-- apt-cacher
+    |   `-- apt-cacher.conf	--> Adresse du serveur et réseau autorisé
+    `-- default
+        `-- apt-cacher		--> Démarrage automatique du service
+
+Ce document décrit de façon succincte la mise en place du proxy de paquets
+APT sur un serveur Debian, pour des postes de travail Debian.
+Pare-feu : ouvrir le port 3142 en TCP.
+# Apt-Cacher
+$IPT -A INPUT -p tcp -i $IFACE_LAN --dport 3142 -j ACCEPT
+
+Installation
+# aptitude install apt-cacher
+
+Configuration
+Définir le démarrage automatique du service :
+# vim /etc/default/apt-cacher
+AUTOSTART=1
+
+La plupart des options de configuration dans /etc/apt-cacher/apt-cacher.conf peuvent être
+laissées telles quelles :
+# vim /etc/apt-cacher/apt-cacher.conf
+daemon_addr=192.168.1.1
+.../...
+allowed_hosts=192.168.1.0/24
+
+Les machines pourront accéder au proxy APT par le port 3142. Les paquets seront conservés dans l’arborescence en-dessous de
+# /var/cache/apt-cacher.
+
+Gestion et utilisation
+Démarrer et arrêter le service :
+# service apt-cacher start|stop|restart
+Au premier démarrage, un message d’erreur nous avertit simplement que les deux fichiers journaux access.log et error.log ont été créés.
+
+Pour vérifier le bon fonctionnement de Apt-Cacher, ouvrir dans un navigateur :
+http://ip_du_serveur:3142
+http://ip_du_serveur:3142/report
+La première page affiche un résumé de la configuration, la seconde présente une synthèse de
+l'efficacité du proxy.
+
+Configuration des postes clients
+Créer un fichier /etc/apt/apt.conf qui pointe vers le proxy :
+# vim /etc/apt/apt.conf
+Acquire::http::Proxy "http://192.168.1.1:3142/";
+Alternativement, on pourrait définir cette configuration dans /etc/apt/apt.conf.d/01proxy.
+

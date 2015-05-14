@@ -1,0 +1,11 @@
+Ecofont Téléchargement
+http://www.ecofont.com/fr/produits/vert/police/telechargement.html
+ecofont_vera_sans_regular.zip
+1 - Déziper l'archive
+2 - Copier la police ttf
+[root@marge:/usr/share/fonts/truetype] # cp /home/jpantinoux/Téléchargements/ecofont_vera_sans_regular.ttf .
+
+3 - Intégrer la police au système
+[root@marge:/usr/share/fonts/truetype] # fc-cache -fv
+
+

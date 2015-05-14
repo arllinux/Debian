@@ -1,0 +1,118 @@
+# ====================================================
+Ce fichier vient après l'installation de base du système.
+Il faut maintenant mettre en place le serveur graphique et le tester.
+
+
+'Mise en place du serveur X et de fluxbox pour les tests d'affichage'
+
+# aptitude install xorg mesa-utils fluxbox firefox
+
+Dans le cas présent il s'agit d'une carte graphique ATI
+
+# lspci | grep -i vga
+02:00.0 VGA compatible controller: ATI Technologies Inc RV370 5B60 [Radeon X300 (PCIE)]
+
+On lance une recherche sur les drivers ATI radeon
+
+# aptitude search radeon
+i A libdrm-radeon1                                             - Userspace interface to radeon-specific kernel DRM services -- runtime                                       
+p   libdrm-radeon1-dbg                                         - Userspace interface to radeon-specific kernel DRM services -- debugging symbols                             
+i A radeontool                                                 - utility to control ATI Radeon backlight functions on laptops                                                
+i A xserver-xorg-video-radeon                                  - X.Org X server -- AMD/ATI Radeon display driver                                                             
+p   xserver-xorg-video-radeon-dbg                              - X.Org X server -- AMD/ATI Radeon display driver (debugging symbols)                                         
+p   xserver-xorg-video-radeonhd                                - X.Org X server -- AMD/ATI r5xx-r7xx alternate display driver                                                
+p   xserver-xorg-video-radeonhd-dbg                            - X.Org X server -- AMD/ATI r5xx-r7xx alternate display driver                                                 
+
+On voit à la ligne 3 qu'un driver ATI radeon est installé
+Il faut configurer le serveur X
+# X -configure
+Ceci crée un fichier xorg.conf.new dans root
+# cp xorg.conf.new /etc/X11/xorg.conf
+
+.../...
+Section "Device"
+...
+        Identifier  "Card0"
+        Driver      "radeon"
+        VendorName  "ATI Technologies Inc"
+        BoardName   "RV370 5B60 [Radeon X300 (PCIE)]"
+        BusID       "PCI:2:0:0"
+
+On voit que la carte à parfaitement été prise en compte
+Si l'option "Driver" était "vesa", il aurait fallu tester avec "radeon"
+Sinon il faut chercher sur le site ATI voir si configuration possible.
+En dernier recours mettre une carte N'vidia
+
+' Création d'un utilisateur :'
+# adduser jpantinoux
+# su jpantinoux
+# startx
+
+Fluxbox se lance
+Il faut ouvrir un émulateur de terminal pour tester la carte graphique
+$ glxgears
+5012 frames in 5.0 seconds = 1002.317 FPS
+5116 frames in 5.0 seconds = 1023.040 FPS
+5114 frames in 5.0 seconds = 1022.721 FPS
+5116 frames in 5.0 seconds = 1023.162 FPS
+5117 frames in 5.0 seconds = 1023.243 FPS
+
+OK
+
+Puis
+
+$ glxinfo | head -n 3
+name of display: :0.0
+display: :0  screen: 0
+direct rendering: Yes
+
+# ===============================================================
+
+' Installation de Gnome base '
+
+# aptitude install gnome-core
+
+Tester l'affichage en simple utilisateur
+$startx
+
+Si blocage de l'affichage graphique (traits bleus),
+se déplacer dans le répertoire :
+# cd /etc/modprobe.d/
+# vim radeon-kms.conf
+Remplacer la ligne :
+options radeon modeset=1
+par
+options radeon modeset=0
+
+# ------------------------------------
+
+Installer l'écran de démarrage (choix utilisateur)
+# aptitude install gdm3
+
+Après redémarrage
+Réglages "Apparence"
+
+	Clearlook
+	Icones : Mist
+	Polices
+		Détails
+			Optimisation --> Légère
+		Taille
+			94 ppp
+
+Economiseur d'écran
+	Tout désactiver
+
+En complément et pour être sur que l'écran ne va pas s'éteindre pendant la durée d'un film
+# vim /etc/gdm3/Init/Default
+Avant la fin du fichier "exit 0"
+
+.../...
+xset s off
+xset -dpms
+
+exit 0
+
+Faire le réglage en graphique des sources de mises à jour :
+Mise à jour quotidiennes et installation sans confirmation des mises à jour de sécurité
+

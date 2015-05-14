@@ -1,0 +1,59 @@
+#------------------------
+Pour intaller VirtualBox
+
+JPA - libarles - août 2013
+
+Ex sur Debian wheezy
+
+# aptitude install virtualbox
+
+Puis il faut ajouter le groupe vboxusers à l'utilisateur
+
+# usermod -a -G vboxusers jpantinoux
+
+Se rendre sur la site de Virtual Box et rechercher les extentions pack correspondant à la version installée
+
+# wget -c http://download.virtualbox.org/virtualbox/4.1.18/virtualbox-4.1_4.1.18-78361~Debian~wheezy_i386.deb
+Ensuite pour les installer, se placer dans le dossier où elles ont été téléchargées puis :
+# VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-*
+
+Pour installer les additions invités
+Périphériques > Installer les Additions Invité
+Un message demande si vous souhaitez les télécharger
+
+Une fois le téléchargement terminé (voir la barre de progression en bas de la fenêtre à gauche,
+quitter Virtual Box, puis :
+
+Créer un répertoire dans /mnt
+# mkdir cdrom
+Se déplacer dans le dossier utilisateur : .VirtualBox
+# cd /home/jpantinoux/.VirtualBox
+Monter l'image disque
+[root@marge:/home/jpantinoux/.VirtualBox] # mount VBoxGuestAdditions_4.1.18.iso /mnt/cdrom/
+ng archive integrity... All good.
+Uncompressing VirtualBox 4.1.18 Guest Additions for Linux.........
+VirtualBox Guest Additions installer
+Removing existing VirtualBox DKMS kernel modules ...done.
+Removing existing VirtualBox non-DKMS kernel modules ...done.
+Building the VirtualBox Guest Additions kernel modules
+The headers for the current running kernel were not found. If the following
+module compilation fails then this could be the reason.
+
+Building the main Guest Additions module ...done.
+Building the shared folder support module ...done.
+Building the OpenGL support module ...fail!
+(Look at /var/log/vboxadd-install.log to find out what went wrong)
+Doing non-kernel setup of the Guest Additions ...done.
+Installing the Window System drivers
+Installing X.Org Server 1.12 modules ...done.
+Setting up the Window System to use the Guest Additions ...done.
+You may need to restart the hal service and the Window System (or just restart
+the guest system) to enable the Guest Additions.
+
+Installing graphics libraries and desktop services components ...done.
+
+Après cela relancer virtual puis aller dans les paramètres pour désactiver l'image disque
+et réatribuer le lecteur de DVD pour pouvoir réaliser l'installation à partir du suppot DVD
+
+Redémarrer
+

@@ -1,0 +1,56 @@
+# Les commandes de vim que j'utilise
+
+Pour décommenter une série de lignes consécutives dans vim
+
+Ex :
+
+# Ce script permet, avec les deux fichiers contenus dans ce même dossier,
+# d'installer les invites de commande personnalisées
+# de paramétrer vim, et d'installer les outils de bases.
+
+
+Il faut se placer sur le premier #, puis il faut utiliser la combinaison de
+touche : Ctrl + v
+Vim passe en mode : visuel bloc
+Dans le texte ci-dessus nous voulons aussi effacer l'espace après le #
+Pour cela nous pressons 1 fois la touche "l"
+Notre sélection porte sur le dièse et l'espace de droite.
+Pour étendre la sélection vers le bas il faut presser la touche "J" jusqu'à la
+ligne voulue.
+Ensuite il faut presser sur la touche "D"
+
+# Voici le résultat :
+
+Ce script permet, avec les deux fichiers contenus dans ce même dossier,
+d'installer les invites de commande personnalisées
+de paramétrer vim, et d'installer les outils de bases.
+
+
+# Pour insérer un # et un espace devant chaque ligne :
+
+Il faut se placer sur la première lettre de la première ligne, puis il faut
+taper le # et l'espace.
+Il faut se placer sur le premier #, puis il faut utiliser la combinaison de
+touche : Ctrl + v
+Vim passe en mode : visuel bloc
+Pour copier notre sélection il faut presser la touche "Y"
+Ensuite il faut se placer sur la première lettre de la ligne suivante et
+presser la combinaison de touche : Shift + p
+
+# Voici le résultat :
+
+# Ce script permet, avec les deux fichiers contenus dans ce même dossier,
+# d'installer les invites de commande personnalisées
+# de paramétrer vim, et d'installer les outils de bases.
+
+Et voilà, simple non ?
+
+#==================================================================
+http://blog.nicolargo.com/2009/11/commenter-plusieurs-ligne-dans-vi.html
+
+Petite note interne pour commenter plusieurs lignes (par exemple 4 avec le caractère de commentaire #) dans vi ou vim.
+
+Il suffit de se positionner sur la première ligne à commenter puis de taper :
+
+:.,+4 s/^/#/g
+

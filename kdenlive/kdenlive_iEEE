@@ -1,0 +1,55 @@
+# ==========================================
+# Activer le port firewire pour Kdenlive
+# ==========================================
+
+----------------------------
+# Vérifier les modules installés
+----------------------------
+$ lsmod | egrep 'firewire|1394'
+sparse_keymap          13948  1 acer_wmi
+firewire_ohci          40409  0 
+firewire_core          68769  7 firewire_ohci
+crc_itu_t              12707  1 firewire_core
+
+
+-----------------------------
+# Passer en root puis :
+# Ouvrir le fichier /etc/modules et ajouter les trois dernières lignes
+# Cette action à pour but de charger ces modules au démarrage.
+-----------------------------
+# --- Contenu du fichier ---	
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+# Parameters can be specified after the module name.
+
+lp
+rtc
+raw1394
+video1394
+dv1394
+
+
+-----------------------------
+# Ouvrir le fichier /etc/udev/udev.conf
+# Rajouter les 3 dernières lignes
+# Permet de passer l'info au noyau avant son lancement ??
+-----------------------------
+# --- Contenu du fichier ---
+# see udev(7) for details
+#
+# udevd is started in the initramfs, so when this file is modified the
+# initramfs should be rebuilt.
+
+#udev_log="info"
+# ieee1394 devices
+KERNEL=="dv1394*", NAME="dv1394/%n"
+KERNEL=="video1394*", NAME="video1394/%n"
+-----------------------------
+
+
+-----------------------------
+# En root ajouter le groupe video à l'utilisateur
+-----------------------------
+# adduser jpantinoux vidéo

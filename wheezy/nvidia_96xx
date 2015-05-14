@@ -1,0 +1,81 @@
+Installation carte nvidia sur ordinateur de Lydie
+
+# apt-cache policy nvidia-kernel-source
+Je ne vois pas à quoi sert cette commande, car cette capture a été faite après l'installation et il est toujours indiqué : Installé : (aucun)
+nvidia-kernel-source:
+  Installé : (aucun)
+  Candidat : 304.88-1+deb7u1
+ Table de version :
+     319.72-1~bpo70+1 0
+        100 http://ftp.debian.org/debian/ wheezy-backports/non-free i386 Packages
+     304.88-1+deb7u1 0
+        500 http://ftp.fr.debian.org/debian/ wheezy/non-free i386 Packages
+
+
+# lspci
+01:00.0 VGA compatible controller: NVIDIA Corporation NV25 [GeForce4 Ti 4200] (rev a3)
+Quelle carte ?
+
+
+# aptitude update
+# aptitude upgrade
+# aptitude dist-upgrade
+Mise à jour complète du système
+
+# aptitude search nvidia-kernel
+Rechercher quel modules peuvent être installés
+v   nvidia-kernel-173.14.35                                                                -                                                                                                  
+p   nvidia-kernel-2.6-486                                                                  - NVIDIA kernel module for Linux (486 transitional package)                                        
+p   nvidia-kernel-2.6-686-pae                                                              - NVIDIA kernel module for Linux (686-pae transitional package)                                    
+p   nvidia-kernel-2.6-amd64                                                                - NVIDIA kernel module for Linux (amd64 transitional package)                                      
+p   nvidia-kernel-3.2.0-4-486                                                              - NVIDIA binary kernel module for Linux 3.2.0-4-486                                                
+p   nvidia-kernel-3.2.0-4-686-pae                                                          - NVIDIA binary kernel module for Linux 3.2.0-4-686-pae                                            
+p   nvidia-kernel-3.2.0-4-amd64                                                            - NVIDIA binary kernel module for Linux 3.2.0-4-amd64                                              
+v   nvidia-kernel-304.88                                                                   -                                                                                                  
+v   nvidia-kernel-319.72                                                                   -                                                                                                  
+p   nvidia-kernel-486                                                                      - NVIDIA kernel module for Linux (486 flavor)                                                      
+p   nvidia-kernel-686-pae                                                                  - NVIDIA kernel module for Linux (686-pae flavor)                                                  
+v   nvidia-kernel-71.86.15                                                                 -                                                                                                  
+v   nvidia-kernel-96.43.23                                                                 -                                                                                                  
+p   nvidia-kernel-amd64                                                                    - NVIDIA kernel module for Linux (amd64 flavor)                                                    
+i A nvidia-kernel-common                                                                   - NVIDIA binary kernel module support files                                                        
+p   nvidia-kernel-dkms                                                                     - NVIDIA binary kernel module DKMS source                                                          
+p   nvidia-kernel-legacy-173xx-dkms                                                        - NVIDIA binary kernel module DKMS source (173xx legacy version)                                   
+p   nvidia-kernel-legacy-173xx-source                                                      - NVIDIA binary kernel module source (173xx legacy version)                                        
+p   nvidia-kernel-legacy-71xx-dkms                                                         - NVIDIA binary kernel module DKMS source (71xx legacy version)                                    
+v   nvidia-kernel-legacy-71xx-dkms:any                                                     -                                                                                                  
+p   nvidia-kernel-legacy-71xx-source                                                       - NVIDIA binary kernel module source (71xx legacy version)                                         
+i   nvidia-kernel-legacy-96xx-dkms                                                         - transition to nvidia-legacy-96xx-kernel-dkms                                                     
+p   nvidia-kernel-legacy-96xx-source                                                       - transition to nvidia-legacy-96xx-kernel-source                                                   
+p   nvidia-kernel-legacy-source                                                            - NVIDIA binary kernel module source (transitional, 71xx legacy)                                   
+p   nvidia-kernel-source                                                                   - NVIDIA binary kernel module source                                 
+
+# aptitude install nvidia-kernel-legacy-96xx-dkms
+Installation du driver correspondant à cette carte (je l'ai su par la doc de Slackware - slackbuids.org)
+
+# modbrobe nvidia
+Faire prendre en compte le module nvidia
+
+# reboot
+
+
+Serveur X planté
+
+
+# vim /etc/default/grub
+
+Réactivation des 2 lignes du paramétrage de la console
+Suppression de l'option "nomodeset"
+
+# update-grub
+
+
+# aptitude install nvidia-xconfig
+Installation du gestionnaire de la carte nvidia
+
+# nvidia-xconfig
+Création du fichier /etc/X11/xorg.conf
+
+# reboot
+
+Et ça marche enfin

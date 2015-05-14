@@ -1,0 +1,45 @@
+#===================================================
+
+Mise en place des protections sur une machine locale
+ou un serveur.
+
+#===================================================
+
+Paramétrage de la freebox
+Etat du routeur : Actif
+- Adresse : 192.168.0.254
+
+Configuration du DHCP
+- Etat du DHCP : Inactif
+
+#====================================================
+Dans le serveur
+#====================================================
+
+Fichiers utilisés
+Empècher l'accès à la machine par le compte root
+# /etc/ssh/sshd_config (sur la machine à atteindre)
+
+Modification du fichier
+# Interdiction de se connecter à root - JPA
+PermitRootLogin no
+
+(facultatif)
+Si l'on souhaite rediriger vers le port 18525 au lieu du port 22
+# What ports, IPs and protocols we listen for
+# Port 22
+
+# Test port 18525 - JPA
+Port 18525
+
+#=====================================================
+Encapsuleur TCP
+
+Fichiers utilisés
+# /etc/hosts.allow
+# /etc/hosts.deny
+# /var/log/deny.log
+
+# hosts.allow_tem
+# hosts.deny_tem
+

@@ -1,0 +1,275 @@
+# -------------------------------------------------------------------------
+'Supprimer windows s'il a été installé en premier et récupérer la partition'
+# --------------------------------------------------------------------------
+
+
+Tout d'abord lister toutes les partitions présentes
+
+[root@gaston:/etc] # blkid
+/dev/sda1: LABEL="Nouveau nom" UUID="C58D1F19C2D7AF31" TYPE="ntfs" 
+/dev/sda5: UUID="ac02285e-3816-459e-b8bb-4802c5608999" TYPE="ext2" 
+/dev/sda6: UUID="ccf92d08-4f5f-440a-b7d5-3b9b6746fd55" TYPE="ext4" 
+/dev/sda7: UUID="2a177a54-50f1-406c-93da-c1480329783d" TYPE="swap" 
+/dev/sda8: UUID="e79520f6-53d6-4f65-b428-6bb5bca120ed" TYPE="ext4" 
+/dev/sda9: LABEL="io" UUID="1808BBC63E1B947F" TYPE="ntfs" 
+/dev/sda10: LABEL="vito" UUID="61007F501BFEE058" TYPE="ntfs" 
+/dev/sda11: LABEL="lolo" UUID="6B6B90257B9C70CA" TYPE="ntfs" 
+/dev/sda12: LABEL="zac" UUID="5D5B1AD50A903D59" TYPE="ntfs" 
+/dev/sda13: LABEL="io-save" UUID="44A3FE432D60A8F3" TYPE="ntfs" 
+/dev/sda14: LABEL="vito-save" UUID="776363D45C37A342" TYPE="ntfs" 
+/dev/sda15: LABEL="lolo-save" UUID="18C7DBE300C60E04" TYPE="ntfs" 
+/dev/sda16: LABEL="zac-save" UUID="3B3F4978171AD8AE" TYPE="ntfs" 
+
+Nous savons que Windows a été installé sur la partition 1
+Il s'agit donc de /dev/sda1 qui porte le label : Nouveau nom
+
+=================================================================
+
+'Il faut vérifier si la partition est montée'
+
+[root@gaston:/etc] # mount
+/dev/sda6 on / type ext4 (rw,errors=remount-ro)
+proc on /proc type proc (rw,noexec,nosuid,nodev)
+sysfs on /sys type sysfs (rw,noexec,nosuid,nodev)
+none on /sys/fs/fuse/connections type fusectl (rw)
+none on /sys/kernel/debug type debugfs (rw)
+none on /sys/kernel/security type securityfs (rw)
+udev on /dev type devtmpfs (rw,mode=0755)
+devpts on /dev/pts type devpts (rw,noexec,nosuid,gid=5,mode=0620)
+tmpfs on /run type tmpfs (rw,noexec,nosuid,size=10%,mode=0755)
+none on /run/lock type tmpfs (rw,noexec,nosuid,nodev,size=5242880)
+none on /run/shm type tmpfs (rw,nosuid,nodev)
+/dev/sda5 on /boot type ext2 (rw)
+/dev/sda8 on /home type ext4 (rw)
+binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,noexec,nosuid,nodev)
+gvfs-fuse-daemon on /home/jpantinoux/.gvfs type fuse.gvfs-fuse-daemon (rw,nosuid,nodev,user=jpantinoux)
+
+==================================================================
+
+'Puisque la partition /dev/sda1 n'est pas montée on peut donc la supprimer'
+
+[root@gaston:/etc] # fdisk /dev/sda
+
+Commande (m pour l'aide): p
+
+Disk /dev/sda: 80.0 GB, 80000000000 bytes
+255 têtes, 63 secteurs/piste, 9726 cylindres, total 156250000 secteurs
+Unités = secteurs de 1 * 512 = 512 octets
+Taille de secteur (logique / physique) : 512 octets / 512 octets
+taille d'E/S (minimale / optimale) : 512 octets / 512 octets
+Identifiant de disque : 0x4292e557
+
+Périphérique Amorce  Début        Fin      Blocs     Id  Système
+/dev/sda1   *        2048    18751487     9374720    7  HPFS/NTFS/exFAT
+/dev/sda2        18753534    74276863    27761665    5  Étendue
+/dev/sda5        18753536    18958335      102400   83  Linux
+/dev/sda6        18960384    39440383    10240000   83  Linux
+/dev/sda7        39442432    47634431     4096000   82  partition d'échange Linux / Solaris
+/dev/sda8        47636480    57876479     5120000   83  Linux
+/dev/sda9        57878528    59926527     1024000    7  HPFS/NTFS/exFAT
+/dev/sda10       59928576    61976575     1024000    7  HPFS/NTFS/exFAT
+/dev/sda11       61978624    64026623     1024000    7  HPFS/NTFS/exFAT
+/dev/sda12       64028672    66076671     1024000    7  HPFS/NTFS/exFAT
+/dev/sda13       66078720    68126719     1024000    7  HPFS/NTFS/exFAT
+/dev/sda14       68128768    70176767     1024000    7  HPFS/NTFS/exFAT
+/dev/sda15       70178816    72226815     1024000    7  HPFS/NTFS/exFAT
+/dev/sda16       72228864    74276863     1024000    7  HPFS/NTFS/exFAT
+
+Commande (m pour l'aide): d
+Numéro de partition (1-16): 1
+
+========================================================================
+
+'On vérifier que la partition n'apparait plus'
+
+Commande (m pour l'aide): p
+
+Disk /dev/sda: 80.0 GB, 80000000000 bytes
+255 têtes, 63 secteurs/piste, 9726 cylindres, total 156250000 secteurs
+Unités = secteurs de 1 * 512 = 512 octets
+Taille de secteur (logique / physique) : 512 octets / 512 octets
+taille d'E/S (minimale / optimale) : 512 octets / 512 octets
+Identifiant de disque : 0x4292e557
+
+Périphérique Amorce  Début        Fin      Blocs     Id  Système
+/dev/sda2        18753534    74276863    27761665    5  Étendue
+/dev/sda5        18753536    18958335      102400   83  Linux
+/dev/sda6        18960384    39440383    10240000   83  Linux
+/dev/sda7        39442432    47634431     4096000   82  partition d'échange Linux / Solaris
+/dev/sda8        47636480    57876479     5120000   83  Linux
+/dev/sda9        57878528    59926527     1024000    7  HPFS/NTFS/exFAT
+/dev/sda10       59928576    61976575     1024000    7  HPFS/NTFS/exFAT
+/dev/sda11       61978624    64026623     1024000    7  HPFS/NTFS/exFAT
+/dev/sda12       64028672    66076671     1024000    7  HPFS/NTFS/exFAT
+/dev/sda13       66078720    68126719     1024000    7  HPFS/NTFS/exFAT
+/dev/sda14       68128768    70176767     1024000    7  HPFS/NTFS/exFAT
+/dev/sda15       70178816    72226815     1024000    7  HPFS/NTFS/exFAT
+/dev/sda16       72228864    74276863     1024000    7  HPFS/NTFS/exFAT
+
+========================================================================
+
+'On recrée une partition ext4'
+
+Commande (m pour l'aide): n
+Partition type:
+   p   primary (0 primary, 1 extended, 3 free)
+   l   logical (numbered from 5)
+Select (default p): p
+Numéro de partition (1-4, par défaut 1): 1
+Premier secteur (2048-156249999, par défaut 2048): 
+Utilisation de la valeur par défaut 2048
+Dernier secteur, +secteurs or +taille{K,M,G} (2048-18753533, par défaut 18753533): 
+Utilisation de la valeur par défaut 18753533
+
+Commande (m pour l'aide): p
+
+Disk /dev/sda: 80.0 GB, 80000000000 bytes
+255 têtes, 63 secteurs/piste, 9726 cylindres, total 156250000 secteurs
+Unités = secteurs de 1 * 512 = 512 octets
+Taille de secteur (logique / physique) : 512 octets / 512 octets
+taille d'E/S (minimale / optimale) : 512 octets / 512 octets
+Identifiant de disque : 0x4292e557
+
+Périphérique Amorce  Début        Fin      Blocs     Id  Système
+/dev/sda1            2048    18753533     9375743   83  Linux
+/dev/sda2        18753534    74276863    27761665    5  Étendue
+/dev/sda5        18753536    18958335      102400   83  Linux
+/dev/sda6        18960384    39440383    10240000   83  Linux
+/dev/sda7        39442432    47634431     4096000   82  partition d'échange Linux / Solaris
+/dev/sda8        47636480    57876479     5120000   83  Linux
+/dev/sda9        57878528    59926527     1024000    7  HPFS/NTFS/exFAT
+/dev/sda10       59928576    61976575     1024000    7  HPFS/NTFS/exFAT
+/dev/sda11       61978624    64026623     1024000    7  HPFS/NTFS/exFAT
+/dev/sda12       64028672    66076671     1024000    7  HPFS/NTFS/exFAT
+/dev/sda13       66078720    68126719     1024000    7  HPFS/NTFS/exFAT
+/dev/sda14       68128768    70176767     1024000    7  HPFS/NTFS/exFAT
+/dev/sda15       70178816    72226815     1024000    7  HPFS/NTFS/exFAT
+/dev/sda16       72228864    74276863     1024000    7  HPFS/NTFS/exFAT
+
+
+==========================================================================
+'On enregistre les modifications'
+
+Commande (m pour l'aide): w      
+La table de partitions a été altérée !
+
+Appel de ioctl() pour relire la table de partitions.
+
+Attention : la table de partitions n'a pas pu être relue : erreur 16 : Périphérique ou ressource occupé.
+Le noyau continue à utiliser l'ancienne table. La nouvelle sera utilisée
+lors du prochain démarrage ou après avoir exécuté partprobe(8) ou kpartx(8).
+Synchronisation des disques.
+
+========================================================================
+'On exécute cette commande pour que le système prenne en compte la modification'
+
+[root@gaston:/etc] # partprobe
+
+=======================================================================
+
+'On crée un format de fichier sur la partition'
+
+[root@gaston:/etc] # mkfs -t ext4 /dev/sda1
+mke2fs 1.42 (29-Nov-2011)
+Étiquette de système de fichiers=
+Type de système d'exploitation : Linux
+Taille de bloc=4096 (log=2)
+Taille de fragment=4096 (log=2)
+« Stride » = 0 blocs, « Stripe width » = 0 blocs
+586368 i-noeuds, 2343935 blocs
+117196 blocs (5.00%) réservés pour le super utilisateur
+Premier bloc de données=0
+Nombre maximum de blocs du système de fichiers=2403336192
+72 groupes de blocs
+32768 blocs par groupe, 32768 fragments par groupe
+8144 i-noeuds par groupe
+Superblocs de secours stockés sur les blocs : 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+
+Allocation des tables de groupe : complété                        
+Écriture des tables d'i-noeuds : complété                        
+Création du journal (32768 blocs) : complété
+Écriture des superblocs et de l'information de comptabilité du système de
+fichiers : complété
+
+========================================================================
+'On crée un point de montage dans le /home de l'utilisateur'
+
+[root@gaston:/etc] # cd /home/jpantinoux/
+[root@gaston:/home/jpantinoux] # mkdir rangement
+
+'On monte la partition sur la point de montage nouvellement créé'
+
+
+[root@gaston:/home/jpantinoux] # mount /dev/sda1 /home/jpantinoux/rangement/
+
+========================================================================
+
+'La commande mount nous montre bien que la partition est utilisée'
+
+[root@gaston:/home/jpantinoux] # mount
+
+/dev/sda6 on / type ext4 (rw,errors=remount-ro)
+proc on /proc type proc (rw,noexec,nosuid,nodev)
+sysfs on /sys type sysfs (rw,noexec,nosuid,nodev)
+none on /sys/fs/fuse/connections type fusectl (rw)
+none on /sys/kernel/debug type debugfs (rw)
+none on /sys/kernel/security type securityfs (rw)
+udev on /dev type devtmpfs (rw,mode=0755)
+devpts on /dev/pts type devpts (rw,noexec,nosuid,gid=5,mode=0620)
+tmpfs on /run type tmpfs (rw,noexec,nosuid,size=10%,mode=0755)
+none on /run/lock type tmpfs (rw,noexec,nosuid,nodev,size=5242880)
+none on /run/shm type tmpfs (rw,nosuid,nodev)
+/dev/sda5 on /boot type ext2 (rw)
+/dev/sda8 on /home type ext4 (rw)
+binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,noexec,nosuid,nodev)
+gvfs-fuse-daemon on /home/jpantinoux/.gvfs type fuse.gvfs-fuse-daemon (rw,nosuid,nodev,user=jpantinoux)
+/dev/sda1 on /home/jpantinoux/rangement type ext4 (rw)
+
+==================================================================================
+'On vérifie que l'UUID de partition à bien été modidiée.
+
+
+[root@gaston:/home/jpantinoux] # ls -l /dev/disk/by-uuid/
+total 0
+lrwxrwxrwx 1 root root 10 avril 17 22:48 1808BBC63E1B947F -> ../../sda9
+lrwxrwxrwx 1 root root 11 avril 17 22:48 18C7DBE300C60E04 -> ../../sda15
+lrwxrwxrwx 1 root root 10 avril 17 22:39 2a177a54-50f1-406c-93da-c1480329783d -> ../../sda7
+lrwxrwxrwx 1 root root 11 avril 17 22:48 3B3F4978171AD8AE -> ../../sda16
+lrwxrwxrwx 1 root root 11 avril 17 22:48 44A3FE432D60A8F3 -> ../../sda13
+lrwxrwxrwx 1 root root 10 avril 17 22:48 4e072039-0f6b-499c-b480-15deacc8ce9f -> ../../sda1
+lrwxrwxrwx 1 root root 11 avril 17 22:48 5D5B1AD50A903D59 -> ../../sda12
+lrwxrwxrwx 1 root root 11 avril 17 22:48 61007F501BFEE058 -> ../../sda10
+lrwxrwxrwx 1 root root 11 avril 17 22:48 6B6B90257B9C70CA -> ../../sda11
+lrwxrwxrwx 1 root root 11 avril 17 22:48 776363D45C37A342 -> ../../sda14
+lrwxrwxrwx 1 root root 10 avril 17 22:39 ac02285e-3816-459e-b8bb-4802c5608999 -> ../../sda5
+lrwxrwxrwx 1 root root 10 avril 17 22:39 ccf92d08-4f5f-440a-b7d5-3b9b6746fd55 -> ../../sda6
+lrwxrwxrwx 1 root root 10 avril 17 22:39 e79520f6-53d6-4f65-b428-6bb5bca120ed -> ../../sda8
+[root@gaston:/home/jpantinoux] # 
+
+=================================================================================
+
+'Pour que la partition soit montée à chaque démarrage il faut l'inclure dans le fichier fstab
+
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+proc            /proc           proc    nodev,noexec,nosuid 0       0
+# / was on /dev/sda6 during installation
+UUID=ccf92d08-4f5f-440a-b7d5-3b9b6746fd55 /               ext4    errors=remount-ro 0       1
+# /boot was on /dev/sda5 during installation
+UUID=ac02285e-3816-459e-b8bb-4802c5608999 /boot           ext2    defaults        0       2
+# /home was on /dev/sda8 during installation
+UUID=e79520f6-53d6-4f65-b428-6bb5bca120ed /home           ext4    defaults        0       2
+# swap was on /dev/sda7 during installation
+UUID=2a177a54-50f1-406c-93da-c1480329783d none            swap    sw              0       0
+/dev/fd0        /media/floppy0  auto    rw,user,noauto,exec,utf8 0       0
+# /../../rangement on /dev/sda1 lors de la modification
+UUID=4e072039-0f6b-499c-b480-15deacc8ce9f /home/jpantinoux/rangement    ext4    rw,user,noexec,nosuid,nodev  0  0
+
+
+# --- Fin ---

@@ -1,0 +1,169 @@
+#-------------------------------------------------
+Comment se connecter via ssh à une machine distante
+
+----------------------------------------------
+Jean-Pierre Antinoux 12-2010
+----------------------------------------------
+
+1 - Se connecter via ssh
+2 - Se connecter sans taper le mot de passe à chaque fois
+
+----------------------------------
+
+Dans machine locale
+
+Première connexion :
+Lorsque l'on essaie de se connecter pour la première fois à une machine distante par exemple :
+
+$ ssh jpantinoux@192.168.0.2
+
+On obtient le message suivant :
+
+The authenticity of host '192.168.0.2 (192.168.0.2)' can't be established.
+RSA key fingerprint is d7:50:a1:c4:8e:20:52:53:be:2b:77:44:4d:37:81:fc.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.0.2' (RSA) to the list of known hosts.
+jpantinoux@192.168.0.2's password: 
+[jpantinoux@acer1350 ~]$
+
+Ce message nous indique dans ses deux premières lignes que l'authenticité de la connexion n'a pu être établie et qu'un clé de criptage viens d'être créée.
+Ensuite on nous demande si nous desirons continuer. Nous sommes invité à répondre par : yes
+Ensuite on nous indique cette machine va être ajoutée à la liste des clients connus
+Puis on tape le mot de passe de l'utilisateur de la machine distante.
+
+Enfin on arrive sur l'invite de commande de l'autre machine :
+[jpantinoux@acer1350 ~]$
+
+---------------------------------
+La clé à changée : comment faire ?
+(dans machine locale)
+---------------------------------
+
+Si lors d'une tentative de connexion vous obtenez ce message en retour :
+
+[jpantinoux@prunelle ~]$ ssh jpantinoux@192.168.0.2
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+d7:50:a1:c4:8e:20:52:53:be:2b:77:44:4d:37:81:fc.
+Please contact your system administrator.
+Add correct host key in /home/jpantinoux/.ssh/known_hosts to get rid of this message.
+Offending key in /home/jpantinoux/.ssh/known_hosts:1
+RSA host key for 192.168.0.2 has changed and you have requested strict checking.
+Host key verification failed.
+
+Il s'agit dans ce cas soit d'un attaque comme indiquée dans le message, soit plus simplement d'un reinitialisation du système qui à détruit ou modifié la clé. Et donc la connexion n'est plus possible.
+
+---------------------------------
+Suppression de l'ancienne clé
+(dans machine locale)
+---------------------------------
+
+La ou les clés sont contenues dans le fichier /home/jpantinoux/.ssh/known_hosts
+Pour supprimer l'une d'entre elles, il faut exécuter la commande suivante :
+
+
+[jpantinoux@prunelle .ssh]$ ssh-keygen -R 192.168.0.2 (IP de la machine à contacter)
+
+
+/home/jpantinoux/.ssh/known_hosts updated.
+Original contents retained as /home/jpantinoux/.ssh/known_hosts.old
+
+Il nous est indique que la modification dans le fichier à été faite.
+De plus dans sa grande magnificence le système à généré une copie de l'ancien fichier qu'il a nommé : known_hosts.old
+
+On peut, si le fichier ne contient qu'une seule clé, directement le supprimer :
+
+$ rm -rf known_hosts
+
+----------------------------------
+Générer une nouvelle clé
+(dans machine locale)
+----------------------------------
+
+[jpantinoux@prunelle ~]$ ssh-keygen -t rsa
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/jpantinoux/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/jpantinoux/.ssh/id_rsa.
+Your public key has been saved in /home/jpantinoux/.ssh/id_rsa.pub.
+The key fingerprint is:
+6e:ce:96:fe:07:75:c3:27:61:58:a2:8e:7b:76:eb:fe jpantinoux@prunelle
+[jpantinoux@prunelle ~]$ 
+
+----------------------------------
+Vérification des fichiers créés
+(dans machine locale)
+----------------------------------
+
+[jpantinoux@prunelle .ssh]$ ls -l
+total 12
+-rw------- 1 jpantinoux jpantinoux 1675 déc 18 16:32 id_rsa
+-rw-r--r-- 1 jpantinoux jpantinoux  401 déc 18 16:32 id_rsa.pub
+-rw-r--r-- 1 jpantinoux jpantinoux 1217 oct 30 00:08 known_hosts
+[jpantinoux@prunelle .ssh]$
+
+--------------------------------------------
+Envoie la clé publique à la machine distante
+(dans machine locale)
+--------------------------------------------
+
+[jpantinoux@prunelle .ssh]$ ssh-copy-id -i id_rsa.pub jpantinoux@192.168.0.2
+10
+jpantinoux@192.168.0.2's password: 
+Now try logging into the machine, with "ssh 'jpantinoux@192.168.0.2'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+[jpantinoux@prunelle .ssh]$ 
+
+# Si le port est autre que le port 22 il faut écrire la commande comme ceci
+[jpantinoux@prunelle .ssh]$ ssh-copy-id -i id_rsa.pub "jpantinoux@192.168.0.2 -p 18525"
+
+-----------------------------------------------
+Accéder à la machine distante sans mot de passe
+(dans machine locale)
+-----------------------------------------------
+
+Ensuite on peut accéder à la machine distante sans taper de mot de passe. On peut également n'indiquer que l'adresse IP si le nom d'utilisateur est le même.
+
+[jpantinoux@prunelle .ssh]$ ssh 192.168.0.2
+Last login: Sat Dec 18 16:59:22 2010 from 192.168.0.1
+[jpantinoux@acer1350 ~]$ 
+
+
+----------------------------------------------
+Résultat dans la machine distante
+----------------------------------------------
+Voici ce que l'on obtient dans la machine distante
+
+Extrait du fichier /home/jpantinoux/ après un ls -la :
+
+
+/.../
+
+drwr------   2 jpantinoux jpantinoux   4096 18 déc.  17:14 .ssh
+drwxr-xr-x.  2 jpantinoux jpantinoux   4096 12 déc.  22:12 Téléchargements
+drwxrwxr-x.  2 jpantinoux jpantinoux   4096 12 déc.  23:01 .themes
+drwx------.  4 jpantinoux jpantinoux   4096 12 déc.  23:01 .thumbnails
+drwx------.  3 jpantinoux jpantinoux   4096 13 déc.  01:52 .thunderbird
+drwxr-xr-x.  2 jpantinoux jpantinoux   4096 12 déc.  22:12 Vidéos
+-rw-------   1 jpantinoux jpantinoux    934 18 déc.  17:14 .viminfo
+-rw-------   1 jpantinoux jpantinoux   1704 18 déc.  15:29 .xsession-errors
+-rw-------.  1 jpantinoux jpantinoux 129947 13 déc.  02:07 .xsession-errors.old
+[jpantinoux@acer1350 ~]$ 
+
+[jpantinoux@acer1350 ~]$ cd .ssh
+[jpantinoux@acer1350 .ssh]$ ls -l
+total 4
+-rw------- 1 jpantinoux jpantinoux 401 18 déc.  17:10 authorized_keys
+[jpantinoux@acer1350 .ssh]$ 
+

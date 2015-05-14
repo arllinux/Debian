@@ -1,0 +1,20 @@
+[global]
+  workgroup = workgroup
+  netbios name = cerbere
+  server string = Serveur Samba local
+  security = share
+  browseable = yes
+  hosts allow = 192.168.1. 192.168.0.6
+  invalid users = root
+  guest account = smbguest
+  map to guest = bad user
+  force group = users
+  create mode = 660
+  directory mode = 770
+
+[public]
+  path = /srv/samba/public
+  comment = Fichiers partagés
+  read only = no
+  guest ok = yes
+

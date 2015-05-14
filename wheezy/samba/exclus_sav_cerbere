@@ -1,0 +1,13 @@
+# Liste des fichiers exclus de la sauvegarde "frankenstein" vers "cerbere"
+
+.cacaoweb
+*.cacao
+.thumbnails/
+.Trash/
+*.tmp
+*.iso
+.gvfs
+/Vidéos/
+/Musique/
+/VirtualBox*
+/rangement/

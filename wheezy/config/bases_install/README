@@ -1,0 +1,42 @@
+# -------------------------------------------------
+
+'le script : script_install_invites.sh'
+
+Ce script est à exécuter juste après l'installation de base.
+
+Il va réaliser les actions suivantes :
+
+- Colorer l'invite de commande de root (/root/.bashrc).
+- Préparer la coloration pour les futurs utilisateurs
+     /etc/skel/.bash_aliases
+- Configurer vim avec mes paramètres
+- Copie pour faire une sauvegarde (sources.list_old)
+     du fichier /etc/apt/sources.list
+- Copie le nouveau fichier sources.list à la place de l'ancien.
+     # aptitude update
+- Installe les outils de base
+- Met en place le bootsplah
+
+====================================================
+
+- update-grub
+- Configuration du réseau :
+     Fait une sauvegarde du fichier /etc/sysctl.conf en sysctl.conf_old
+		 Copie le nouveau fichier à la place de l'ancien
+     Execute la commande sysctl -p
+- Demande si c'est un poste de travail
+     Si oui fait une copie du fichier /etc/hosts en hosts_old
+		 Copie le nouveau fichier à la place de l'ancien
+- Blackliste le module pcspkr
+     Fait une sauvegarde du fichier /etc/modprobe.d/blacklist.conf
+		 Copie le nouveau fichier à la place de l'ancien
+- Installe Alsa
+     # install alsa-utils
+- Redemarre
+
+- Créer un utilisateur
+- En utilisateur simple lancer :
+     $ alsamixer
+     $ aplay /usr/share/sounds/alsa/*.wav
+- Quand c'est ok :
+     # alsactl store

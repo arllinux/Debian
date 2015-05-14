@@ -1,0 +1,61 @@
+# -----------------------------
+# Le paramètre exclude de rsync
+# -----------------------------
+
+Source
+http://jeff.ecchi.ca/blog/2010/03/18/le-parametre-exclude-de-rsync/
+
+#
+Rien de tel qu’une belle commande rsync de trois kilomètres de long pour faire
+ses backups… excepté quand on veut exclure certains dossiers et que ça ne
+fonctionne pas. Et qu’on perd une heure à s’arracher les cheveux avant de
+comprendre pourquoi. Voici un exemple (factice) erroné:
+
+# rsync --archive --verbose --stats --progress --delete --delete-excluded
+--exclude="/home/jeff/src/" /home/jeff/ /media/backup/
+
+On pourrait croire, selon le gros-bon-sens, que ceci est syntaxiquement
+correct. D’ailleurs, le manpage de rsync ne dit rien à ce sujet. Après une
+heure de tâtonnement, j’ai eu le insight par rapport à la raison pourquoi cet
+idiot de rsync continuait de backuper le dossier «src» quand même:
+
+'la racine (“/”) est relative au dossier racine qu’on backupe.'
+
+Ainsi, si je backupe
+“/home/jeff/”,
+“/” ne correspond pas réellement à “/”, mais à “/home/jeff/”.
+
+Conséquemment, si je veux exclure
+“/home/jeff/src”,
+
+il faut que je lui dise d’exclure
+“/src”
+
+Allez, geeks barbus, dites-moi que c’est parfaitement naturel et logique et que
+j’aurais dû le deviner immédiatement :)
+
+…en fait, ce n’est pas tout. Je découvre en rédigeant ces lignes que rsync a,
+en plus, deux «modes» d’opération, dépendamment de si on met un “/” à la fin du
+chemin de dossier source ou pas.
+
+Tiré du manuel:
+A trailing slash on the source changes this behavior to transfer all files
+from the directory src/bar on the machine foo into the /data/tmp/.
+
+A trailing / on a source name means “copy the contents of this directory”.
+Without a trailing slash it means “copy the directory”.
+
+Traduction commentée
+--------------------
+
+Un / sur le nom de la source signifie "copier le contenu de ce répertoire"
+
+rsync -av --del -e "ssh -p 18525" /home/jpantinoux/ root@192.168.2.1:/srv/samba/public/save_doc_jp/
+copie le "contenu" du dossier "jpantinoux" dans "save_doc_jp"
+
+Sans un slash, cela signifie "copier le répertoire"
+
+rsync -av --del -e "ssh -p 18525" /home/jpantinoux root@192.168.2.1:/srv/samba/public/save_doc_jp/
+copie le dossier "jpantinoux" dans "save_doc_jp"
+
+

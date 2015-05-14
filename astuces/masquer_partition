@@ -1,0 +1,47 @@
+# --------------------------------------------------
+
+Comment cacher une partition NTFS à partir de ubuntu
+
+# --------------------------------------------------
+
+D'abord, vous devez savoir quel disque ou partitions vous voulez cacher. De ce que j'ai observé, Nautilus devra présenter ces périphériques par label . Si elle ne possède pas de label, le dispositif sera associée à la taille du disque / partition.
+
+
+On va demander la liste des partitions par leur label
+# ls -l /dev/disk/by-label
+total 0
+lrwxrwxrwx 1 root root 10 avril 19 23:28 io -> ../../sda9
+lrwxrwxrwx 1 root root 11 avril 19 23:28 io-save -> ../../sda13
+lrwxrwxrwx 1 root root 11 avril 19 23:28 lolo -> ../../sda11
+lrwxrwxrwx 1 root root 11 avril 19 23:28 lolo-save -> ../../sda15
+lrwxrwxrwx 1 root root 11 avril 19 23:28 vito -> ../../sda10
+lrwxrwxrwx 1 root root 11 avril 19 23:28 vito-save -> ../../sda14
+lrwxrwxrwx 1 root root 11 avril 19 23:28 zac -> ../../sda12
+lrwxrwxrwx 1 root root 11 avril 19 23:28 zac-save -> ../../sda16
+
+Les partitions que l'on veut masquer dans cet exemple son les partitions qui se terminent par -save :
+
+io-save -> ../../sda13
+vito-save -> ../../sda14
+lolo-save -> ../../sda15
+zac-save -> ../../sda16
+
+Il faut maintenant créer un fichier que nous appelerons :
+# touch 99-hide-disks.rules
+
+puis il faut le remplir avec un contenu de ce type :
+# vim 99-hide-disks.rules
+
+KERNEL=="sda13", ENV{UDISKS_PRESENTATION_HIDE}="1"
+KERNEL=="sda14", ENV{UDISKS_PRESENTATION_HIDE}="1"
+KERNEL=="sda15", ENV{UDISKS_PRESENTATION_HIDE}="1"
+KERNEL=="sda16", ENV{UDISKS_PRESENTATION_HIDE}="1"
+
+Lorsque le fichier est prêt, le copier à l'emplacement adhéquat
+# cp 99-hide-disks.rules  /etc/udev/rules.d/
+
+Pour appliquer les changements immédiatement il faut exécuter la commande :
+
+# udevadm trigger
+
+

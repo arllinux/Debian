@@ -1,0 +1,23 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# lo 
+auto lo
+iface lo inet loopback
+
+# Connection automatique
+allow-hotplug eth1 eth0
+
+# eth0 (entrée web)
+auto eth0
+iface eth0 inet static
+        address 192.168.0.253
+        netmask 255.255.255.0
+        gateway 192.168.0.254
+
+# eth1 (réseau local)
+auto eth1
+iface eth1 inet static
+        address 192.168.2.1
+        netmask 255.255.255.0
+

@@ -1,0 +1,9 @@
+#
+
+su
+cp .config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/
+cp .config/xfce4/panel/* /etc/xdg/xfce4/panel/
+nano /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+
+Editer la ligne ”<channel name=“xfce4-panel” version=“1.0”>” en ”<channel name=“xfce4-panel” version=“1.0” locked=“VOTRE NOM D'UTILISATEUR”>”:wq
+

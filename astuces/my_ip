@@ -1,0 +1,10 @@
+# Connaitre l'adresse ip publique en ligne de commande
+
+$ wget http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1
+donne
+82.240.4.59
+
+dig +short myip.opendns.com @resolver1.opendns.com
+donne
+82.240.4.59
+

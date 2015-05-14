@@ -1,0 +1,37 @@
+# Paramétrage du pilote openchrome pour les cartes VIA
+
+1
+# Sur les machines n'ayant pas de xorg.conf
+
+Arrêter le serveur X
+Sous Xfce :
+# service lightdm stop
+
+2
+# Générer le fichier xorg.conf
+
+# X -configure
+ou
+# Xorg -configure
+
+3
+# Mettre en place le fichier xorg.conf qui vient de se créer
+
+# cd
+# cp xorg.conf.new /etc/X11/xorg.conf
+
+4
+# Modifier xorg.conf
+# vim /etc/X11/xorg.conf
+---
+Option "AccelMethod" "exa"
+---
+Option "ExaScratchSize" "8192"
+Option "MaxDRIMem" "16384"
+Option "MigrationHeuristic" "greedy"
+---
+
+5
+# Relancer le serveur X
+
+# service lightdm start

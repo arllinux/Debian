@@ -1,0 +1,19 @@
+# root_install
+MARRON='\[\033[0;33m\]'
+BLANC='\[\033[1;37m\]'
+ROUGE='\[\033[0;31m\]'
+NC='\[\033[0m\]'
+PS1="$ROUGE[$NC$BLANC\u$NC@$BLANC\h$NC:$MARRON\w$NC$ROUGE]$NC $BLANC#$NC "
+
+# Vim est l'éditeur par défaut
+EDITOR=vim
+VISUAL=$EDITOR
+export EDITOR VISUAL
+
+# `ls' en couleurs :
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -lh'
+alias la='ls $LS_OPTIONS -la'
+

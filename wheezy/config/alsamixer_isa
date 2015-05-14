@@ -1,0 +1,21 @@
+#-------------------------------------
+Réglage son sur machine Isabelle
+
+
+Un souffle important dans les hauts parleurs de l'écran apparaissait même si
+aucun son n'était joué.
+
+Les réglages sont les suivant pour avoir un son propre.
+
+# alsamiser
+
+Item: Master [dB gain: 0,00]
+Item: PCM [dB gain: 0,00]
+Item: Front [dB gain: 0,00]
+Item: Front Mic [dB gain: 12,00, 12,00]
+
+Tout le reste au minimun
+Et particulièrement Front Mic Boost
+
+# alsactl store
+

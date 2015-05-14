@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# save_cerbere
+# --\\\\\--
+
+Date=$(date +%d-%m-%Y)
+Heure=$(date +%T)
+SOURCEDIR='/home/jpantinoux/Documents'
+DESTDIR='/srv/samba/public/test_save'
+SERVEUR="root@192.168.0.4"
+mess="Sauvegarde terminée"
+# --\\\\\--
+
+# Le script présent dans la machine A vérifie si la machine B est connectée.
+# Si c'est le cas exécute le script.
+
+echo -e "----\nLancement sauvegarde à : $Heure le $Date"
+ping -c 1 192.168.0.4 > /dev/null
+if [ $? = "0" ]
+then
+	rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e ssh $SOURCEDIR $SERVEUR:$DESTDIR/
+	Date=$(date +%d-%m-%Y)
+	Heure=$(date +%T)
+else
+	read -p "!!!!! La synchronisation n'a pu être effectuée, serveur absent : interruption à $Heure... Ctrl + c pour fermer la fenetre"
+
+fi
+halt
+
+# --\\\\\--

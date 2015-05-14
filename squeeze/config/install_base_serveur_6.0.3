@@ -1,0 +1,421 @@
+#-----------------------------------------
+'Installation de base serveur Debian 6.0.3'
+#-----------------------------------------
+
+JPA Février 2012
+
+Installation sur 1 disque dur
+#-----------------------------
+
+Téléchargement de l'image netinstall pour i386 ou 64 bits
+
+	http://cdimage.debian.org/cdimage/
+	Pour système 32 bits
+	http://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/6.0.3/i386/iso-cd/firmware-6.0.3-i386-netinst.iso
+
+	Pour système 64 bits
+	http://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/6.0.3/amd64/iso-cd/firmware-6.0.3-amd64-netinst.iso
+
+Installation
+#-----------
+
+Au lancement de l'installation, lors de l'apparition de l'écran graphique
+	Installer boot menu
+		Install
+			Appuyer sur la touche tab
+
+	La ligne suivante apparaît :
+	> /install/amd/vmlinuz vga=788 initrd=/install.amd/initrd.gz -- quiet
+		Il faut rajouter nomodeset après quiet.
+		...gz -- quiet nomodeset
+	# Attention le clavier est qwerty donc pour taper le m, il faut utiliser la touche ,
+
++++++++++++++++++++++++++
+C'est quoi cette option ?
++++++++++++++++++++++++++
+
+	Depuis le noyau 2.6.29, avec l'introduction du Kernel Mode Setting ou KMS,
+	on peut dès le démarrage du noyau Linux configurer DRI/DRM pour piloter l'affichage sans attendre Xorg
+	et avoir une résolution native à l'écran avec accélération.
+	
+	Cela rend inutile, voire conflictuel l'utilisation des modes VGA textes et framebuffers.
+	Pour l'instant, Intel et AMD/Ati supportent KMS, mais il est peu probable qu'Nvidia le fasse avec ses pilotes propriétaires.
+	Il faudra se tourner vers le développement des pilotes nv ou nouveau.
+
+
+Toute la procédure
+#-----------------
+
+Ecrans Ncurses
+	French
+	France
+	Français (fr-latin9)
+
+Si vous venez de redémarrer après avoir fait les manipulations ci-dessous, passer à eth0
+----------------------------------------------------------------------------------------------
+A partir d'ici, si l'ancienne installation était du raid faire ceci pour éliminer tous résidus.
+	Passer en console :
+		Ctrl + Alt + F2
+		# mdadm -Ss
+		Normalement la commande ne doit rien retourner
+		
+		Pour voir comment les disques sont identifiés :
+		# fdisk /dev/sda
+		On voit ici le partitionnement du disque
+		Celui-ci contient 4 partitions dans notre cas
+		Dans la colonne de droite on peut voir "Linux raid autodetect"
+		La précédente installation fonctionnait en RAID
+
+		# fdisk /dev/sdb
+		Normalement similaire à sda
+	
+		# fdisk /dev/sdc
+		Unable to open /dev/sdc
+		On voit ici qu'il n'y a pas de troisième disque et que notre grappe RAID etait composée de 2 disques
+
+		Suppression des partitions RAID sur le premier disque (sda)
+		# mdadm --zero-superblock /dev/sda1
+		# mdadm --zero-superblock /dev/sda2
+		# mdadm --zero-superblock /dev/sda3
+		# mdadm --zero-superblock /dev/sda4
+
+		Suppression des partitions RAID sur le deuxième disque (sdb)
+		# mdadm --zero-superblock /dev/sdb1
+		# mdadm --zero-superblock /dev/sdb2
+		# mdadm --zero-superblock /dev/sdb3
+		# mdadm --zero-superblock /dev/sdb4
+	
+	Ensuite supprimer la table des partitions sur chaque disque
+		# dd if=/dev/zero of=/dev/sda bs=512 count=64
+		# dd if=/dev/zero of=/dev/sdb bs=512 count=64
+		
+	Redémarrer
+----------------------------------------------------------------------------------
+	eth0 : Atheros Communications ...
+	
+	Nom de machine (sur le réseau)
+		tab	--> Continuer
+	Domaine :
+		vide
+		tab	--> Continuer
+	
+	Mot de passe superutilisateur ("root") :
+		tab	--> Continuer
+	Confirmation mot de passe root :
+		tab	--> Continuer
+	Nom complet du nouvel utilisateur :
+		tab	--> Continuer
+	
+	Identifiant pour le compte utilisateur :
+		tab	--> Continuer
+	Mot de passe pour nouvel utilisateur :
+		tab	--> Continuer
+	Confirmation mot de passe utilisateur :
+		tab	--> Continuer
+	
+	Partitionner les disques
+		Manuel
+
+Si l'on a pas effectué le traitement de nettoyage du RAID, il peut subsiter les partitions de la précédente installation
+	Dans ce cas soit on passe en console :
+		# dd if=/dev/zero of=/dev/sda bs=512 count=64
+		pour remttre la table des partitions de ce dique à zéro,
+		soit on supprime les partitions de façon à disposer d'un seul espace vide.
+
+Après le traitement de mise à jour du RAID nous avons ceci :
+	SCSI1 (0,0,0) (sda) - 82.3 GB ATA HDS728080PLAT20
+	SCSI2 (0,0,0) (sdb) - 82.3 GB ATA Hitachi HDS72168
+
+	On se place sur la première ligne :
+		A l'appui sur la touche Entrée
+		"Faut-il créer une nouvelle table des partitions sur ce disque ?"
+		Oui
+	
+	1 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 120 MB
+		Primaire
+		Début
+
+		Utiliser comme :	système de fichier ext2
+		Point de montage	/boot
+		
+		Fin du paramétrage de cette partition
+
+	2 - Se placer ensuite sur l'espace libre restant de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 2 GB (double de la RAM sauf au dessus de 2 Go =)
+		Primaire
+		Début
+
+		Utiliser comme :	espace d'échange "swap"
+		
+		Fin du paramétrage de cette partition
+	
+	3 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 12 GB
+		Primaire
+		Début
+
+		Utiliser comme :	système de fichier ext4
+		Point de montage	/
+		
+		Fin du paramétrage de cette partition
+	
+	4 - Se placer ensuite sur l'espace libre de ce premier disque
+
+		Créer une nouvelle partition
+		Taille : 70.2 GB (le reste de la place)
+		Primaire
+		Début
+
+		Utiliser comme :	système de fichier ext4
+		Point de montage	/home
+		
+		Fin du paramétrage de cette partition
+
+Terminer le partitionnement et appliquer les changements ?
+Confirmation : Oui
+
+Installation du système de base
+L'installeur va maintenat chercher sur internet les éléments indispensables pour constituer le système
+	
+	Pays du mirroir de l'archive
+		France
+		ftp.fr.debian.org
+		Mandataire HTTP
+			Vide
+			Si l'on dispose d'apt-cacher sur un serveur indiquer son adresse ici
+			Ex : http://192.168.1.1:3142
+
+	Popularity-contest
+		S'il s'agit d'un test d'installation répondre "non"
+
+	Sélection des logiciels
+		A ce stade seul le système de base est installé.
+		Comme nous ne voulons rien d'autre, il faut décocher ce qui nous est proposé :
+			[ ] Environnement graphique de bureau	
+			[*] ssh
+			[ ] Utilitaires standard du système
+
+			Nous rajoutons par contre ssh qui est indispensable pour communiquer vers d'autres serveurs
+			Continuer
+
+	L'installation de Grub2 nous demande si nous voulons mettre Grub sur le secteur d'amorçage
+			Réponse "Oui" dans le cas d'un seul OS
+
+	Installation terminée
+		Retirer le CD et
+		Continuer
+
+'Au reboot'
+#----------
+
+marge login: root
+Password:
+
+Connaitre le nombre de paquets installé pour cette install de base
+# dpkg -l | wc -l
+192
+
+Quelle place tient le système ?
+# df -h
+/dev/sda3		9,2G	588M	8,2G	7%	/
+Notre système de base occupe 588 Mo
+
+'Ajout des outils de base'
+#-------------------------
+
+	# aptitude install file less ncftp nmap pciutils subversion sysv-rv-conf tree vim
+
+
+'Récupération de ma doc sur subversion'
+#-------------------------------------
+
+	# cd /usr/share
+	# svn co svn+ssh://sloteur@svn.tuxfamily.org/svnroot/slocentos/debian
+		Le mot de passe est demandé deux fois :
+		Un pour svn
+		Un pour ssh
+
+'Modification de la console'
+#---------------------------
+	
+	Changer la résolution
+		Il faut ajouter deux lignes dans /etc/default/grub
+			GRUB_GFXMODE=800X600
+			GRUB_GFXPAYLOAD_LINUX=keep
+
+	# update-grub
+
+	Procédure intégrée dans le script suivant____________________
+	Bootsplash
+		Il faut placer l'image au format .tga dans /boot/grub
+	# cd /boot/grub
+	# cp /usr/share/ubuntu1004/debian/config/bootsplash/wwl.tga .
+	# update-grub
+	______________________________________________________________
+	
+	Configuration console
+	# cd /usr/share/debian/config/commandes_couleur/
+	# ./script_install_invites.sh
+
+'Empècher le chargement du module pcspkr (son)'
+#----------------------------------------------
+
+	Au démarrage le message suivant apparaît :
+	Waiting for /dev to be fully populated... // Error: Driver 'pcspkr' is already registered, aborting...
+	Il faut blacklister ce module pour régler le problème
+	# vim /etc/modprobe.d/blacklist.conf
+
+		# Supprime le message lors du démarrage
+		blacklist pcspkr
+
+'Configurer les dépôts'
+#----------------------
+
+	Modifier le fichier /etc/apt/sources.list
+
+# /etc/apt/sources.list 
+ 
+# Dépôts principaux
+deb http://ftp.fr.debian.org/debian/ squeeze main contrib non-free
+deb-src http://ftp.fr.debian.org/debian/ squeeze main contrib non-free
+
+# Mises à jour de sécurité
+deb http://security.debian.org/ squeeze/updates main contrib non-free
+deb-src http://security.debian.org/ squeeze/updates main contrib non-free
+
+# Mises à jour fréquentes
+deb http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
+deb-src http://ftp.fr.debian.org/debian/ squeeze-updates main contrib non-free
+
+#===============================================================================
+'Contenu du script ./script_install_invites.sh'
+':::::::::::::::::::::::::::::::::::::::::::::'
+
+#!/bin/bash
+
+# Ce script permet, avec les deux fichiers contenus dans ce même dossier,
+# d'installer les invites de commande personnalisée
+# de paramétrer vim, et d'installer les outils de bases.
+
+# Fichiers :	invite_user
+#               invite_root
+# Script :	script_install_invites.sh
+# Pour lancer ce script il faut se placer dans le dossier qui le contient
+# ./script_install_invites.sh
+
+
+# Dernière modifs 4/02/2012 
+# Nouvelles modifs le 29/04/2012
+
+FILE_U=invite_user
+FILE_R=invite_root
+RC_USER=/home/
+RC_USER2=/.bashrc
+RC_ROOT=/root/.bashrc
+CWD=$(pwd)
+
+[ $USER != "root" ]
+if [ $? = "0" ]
+    then
+	echo "Pour exécuter ce script il faut être l'utilisateur root !"
+else
+   # read -p 'Nom Utilisateur (login) à personnaliser : ' nom
+   # if [ $nom != "" ]
+   # then
+
+	# Configuration de Vim
+        echo ":: Configuration de Vim. ::"
+	cat vimrc.local > /etc/vim/vimrc.local
+	chmod 0644 /etc/vim/vimrc.local
+
+	# Installation invite perso
+	# cat "$FILE_U" > "$RC_USER$nom$RC_USER2"
+	# chown $nom:$nom "$RC_USER$nom$RC_USER2"
+	# chmod 0644 "$RC_USER$nom$RC_USER2"
+
+	# Personnalisation invite pour les futurs utilisateurs
+	echo ":: Personnalisation invite pour les futurs utilisateurs. ::"
+	cat "$FILE_U" > /etc/skel/.bash_aliases
+	chown root:root /etc/skel/.bash_aliases
+	chmod 0644 /etc/skel/.bash_aliases
+
+	# Installation invite root
+        echo ":: Coloration invite de commande root. ::"
+	cat "$FILE_R" > "$RC_ROOT"
+	chown root:root "$RC_ROOT"
+	chmod 0644 "$RC_ROOT"
+
+	# Mise en place du bootsplash
+	echo ":: Mise en place du bootsplash. ::"
+	cp $CWD/../bootsplash/wwl.tga /boot/grub/
+    
+        # Configurer APT
+        echo ":: Configuration de base de APT. ::"
+        cat $CWD/../apt/sources.list > /etc/apt/sources.list
+        chmod 0644 /etc/apt/sources.list
+	update-grub
+    
+	# Installation de quelques outils en ligne de commande
+        echo ":: Installation outils de base. ::"
+        TOOLS=$(egrep -v '(^\#)|(^\s+$)' $CWD/paquets-base)
+        aptitude -y install $TOOLS
+        
+        # Désactiver l'IPV6
+        echo ":: Désactivation de l'ipv6. ::"
+	cp /etc/sysctl.conf /etc/sysctl.conf_old
+        cat $CWD/sysctl.conf > /etc/sysctl.conf
+        sysctl -p
+        
+        # Installation du fichier hosts pour poste de travail
+        read -p 'Installation fichier hosts pour un poste de travail ? (O/n) : ' ptrv
+	     if [ $ptrv = "o" ]
+             then
+                 cp /etc/hosts /etc/hosts_old
+                 cat $CWD/hosts > /etc/hosts
+             fi
+
+        # Désactiver pcspkr
+        echo ":: Désactivation du modules pcspkr (son). ::"
+        cp /etc/modprobe.d/blacklist.conf /etc/modprobe.d/blacklist.conf_old
+        cat blacklist.conf > /etc/modprobe.d/blacklist.conf
+
+        # Installer Alsa
+        echo ":: Installation d'Alsa (contrôle du son). ::"
+        aptitude install alsa-utils
+	
+        # activer les modifications
+        echo ":: Activation des modifications pour l'invite root. ::"
+	cd
+	source ~/.bashrc
+
+	echo ":: Redemarrer pour continuer l'installation ::"
+    # else
+       # echo "Le nom d'utilisateur est vide. Recommencez !"
+    # fi
+fi
+
+#=============================================================================
+' Fin du script d'installation automatique'
+':::::::::::::::::::::::::::::::::::::::::'
+
+
+'Redemarrage'
+#------------
+
+# dpkg -l | wc -l
+229 (302)
+# df -h
+/dev/sda3		9,2G	702M	8,1G	8%	/
+(/dev/sda3		11 G	863M	10,1G	6%	/)
+# free -m
+28 MB (24 MB)
+
+
+--> Fin <--

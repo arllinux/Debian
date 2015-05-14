@@ -1,0 +1,14 @@
+; db.labo.arles
+$TTL 86400       ; (un jour)
+$ORIGIN labo.arles.
+@ IN SOA cerbere.labo.arles. hostmaster.labo.arles. (
+   2013040801    ; sn
+         10800   ; refresh (3 heures)
+           600   ; retry (10 minutes)
+       1814400   ; expiry (3 semaines)
+         10800 ) ; minimum (3 heures)
+            IN NS cerbere.labo.arles.
+cerbere     IN A   192.168.2.1
+; prunelle    IN A   192.168.2.2
+; bart        IN A   192.168.2.3
+

@@ -1,0 +1,6 @@
+# /etc/apt/sources.list.d/backports.list
+
+# Paquets rétroportés
+deb http://backports.debian.org/debian-backports wheezy-backports main
+deb http://mozilla.debian.net/ wheezy-backports iceweasel-release
+

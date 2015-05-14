@@ -1,0 +1,39 @@
+# /etc/dhcp/dhcpd.conf
+
+# authoritative indique qu’il s’agit du serveur DHCP « officiel » du réseau local.
+authoritative;
+default-lease-time          86400;
+max-lease-time              86400;
+
+# Segment du réseau auxquel le dhcp fournit les données
+option broadcast-address    192.168.2.255; 
+option subnet-mask          255.255.255.0;
+
+# Adresse de la machine qui sert de passerelle pour le réseau local
+option routers              192.168.2.1;
+
+# Si on utilise les DNS de Free (ou d'un autre fournisseur d'accès)
+#option domain-name-servers  212.27.40.240, 212.27.40.241;
+
+# Si on utilise notre DNS local dans le serveur
+option domain-name-servers  192.168.2.1;
+
+# Fournit le NDD qui sera écrit dans le fichiers /etc/resolv.conf du client - line search
+option domain-name          "labo.arles";
+
+subnet 192.168.2.0 netmask 255.255.255.0 { 
+  range 192.168.2.100 192.168.2.200;
+}
+
+host frankenstein { 
+	hardware ethernet 00:1d:72:ae:e3:26;
+	fixed-address 192.168.2.2;
+	option host-name "frankenstein";
+}
+
+#host prunelle-wireless { 
+#        hardware ethernet 00:1C:F0:92:09:C7; 
+#        fixed-address 192.168.2.2; 
+#        option host-name "prunelle";  
+#} 
+

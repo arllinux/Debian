@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------
+' Serveur Samba avec accès public (sans problème de permissions)'
+' Sur serveur Debian Squeeze'
+
+Installer les outils sur le serveur
+# aptitude install samba smbclient
+#
+Sur les clients Linux :
+# aptitude install smbclient smbfs
+#
+Créer un utilisateur public smbguest pour Samba :
+# groupadd smbguest 
+# useradd -g smbguest -s /bin/false -c "Utilisateur Public Samba" smbguest 
+# passwd -l smbguest 
+# smbpasswd -a smbguest -d
+
+Pour lister les utilisateurs samba :
+# pdbedit -L
+
+Supprimer un utilisateur Samba :
+# smbpasswd -d <utilisateur>
+
+Supprimer un utilisateur de la base de donnée :
+# pdbedit -x -u <utilisateur>
+
+Créer le répertoire de partage :
+# mkdir -pv -m 1777 /srv/samba/public
+
+Le répertoire partagé appartient à root :
+[root@cerbere:/srv/samba] # ll
+total 4,0K
+drwxrwxrwt 3 root root 4,0K  3 juin  22:25 public
+
+Les dossiers et fichiers contenu dans public sont ainsi :
+[root@cerbere:/srv/samba/public] # ll
+total 4,0K
+drwxrwx--- 4 smbguest users 4,0K 14 mars  11:10 1204
+
+Le fichier smb.conf contient ceci
+
+[global]
+  workgroup = workgroup
+  netbios name = cerbere
+  server string = Serveur Samba local
+  security = share
+  browseable = yes
+  hosts allow = 192.168.0.
+  invalid users = root
+  guest account = smbguest
+  map to guest = bad user
+  force group = users
+  create mode = 660
+  directory mode = 770
+
+[public]
+  path = /srv/samba/public
+  comment = Fichiers partagés
+  read only = no
+  guest ok = yes
+

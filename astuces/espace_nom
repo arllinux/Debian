@@ -1,0 +1,20 @@
+# -----------------------------
+Pour gérer les espaces dans un script bash
+# -----------------------------
+
+27 mars 2013
+
+Dans le cas du nom d'un fichier ou d'un dossier avec un ou plusieurs espaces
+dans son nom :
+
+déclaration de la variable :
+SOURCEDIR='/home/jpantinoux/Mon dossier'
+
+Utilisation de la variable
+
+ex :
+rsync -av "$SOURCEDIR"
+
+Il faut encadrer la variable avec des guillements pour la protéger de toute
+interprétation.
+

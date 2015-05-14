@@ -1,0 +1,16 @@
+# Supprimer une application
+
+J'ai été ammené à chercher cette astuce car après la suppression de Wine, les entrées de menu ainsi que les applications comme IE, notepad, iTunes cherchaient toujours à ce lancer.
+
+Vous pouvez supprimer une application du menu des deux manières suivantes :
+
+   - Premièrement, le plus radical est de supprimer le fichier .desktop du répertoire ~/.local/share/applications/, mais ceci détruira les associations fichiers de même.
+
+
+   - Deuxièmement, vous pouvez ajouter la ligne suivante dans le fichier .desktop :
+
+# NoDisplay=true
+
+Les fichiers .desktop sont habituellement dans /usr/share/applications pour le système
+
+

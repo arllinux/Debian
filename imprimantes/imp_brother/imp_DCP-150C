@@ -1,0 +1,37 @@
+# Procédure d'installation de l'imprimante Brother DCP-150C
+
+Tout d'abord se rendre sur la page :
+http://doc.ubuntu-fr.org/liste_imprimantes_brother#multifonctions_de_type_dcp
+
+Cliquer sur "Apt" dans la colonne "Pilotes --> Imprimantes" en regards de DCP-150C
+Suivre la procédure automatique en tapant le mot de passe sudo
+
+Par "Menu" puis "Centre de contrôle" cliquer sur "Printer" et ajouter une imprimante.
+Imprimer une page de test.
+
+Pour la section scanner il faut retourner sur la page
+http://doc.ubuntu-fr.org/liste_imprimantes_brother#multifonctions_de_type_dcp
+
+Cliquer sur "brscan2" dans la colonne "Pilotes" --> "scanner" en regards de DCP-150C
+On accède à la page suivante :
+http://support.brother.com/g/s/id/linux/en/download_scn.html#brscan2
+
+Cliquer sur : brscan2 64bit
+
+Validez la page suivante par "I accept"
+
+Installer le paquet de manière automatique avec gdebi
+
+Pour qu'un utilisateur normal puisse utiliser l'imprimante
+aller à la page :
+http://support.brother.com/g/s/id/linux/en/instruction_scn1c.html?c=us_ot&lang=en&redirect=on#u13.04
+
+Click here to download the file.(brother-udev-rule-type1-1.0.0-1.all.deb, ver.1.0.0-1, 2KB)
+Cliquer sur le lien de chargement et utiliser gdebi
+
+Enfin se rendre dans le répertoire : /usr/lib
+exécuter la commande :
+# cp -r /usr/lib64/* /usr/lib
+
+A vérifier
+

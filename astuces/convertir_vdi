@@ -1,0 +1,103 @@
+# Comment extraire les données d'un fichier .vdi (Virtual Box)
+
+La première étape consiste à transformer le fichier *.vdi vers le format .raw
+
+Dans l'exemple il s'agit d'une machine virtuelle avec linux mint 13
+
+Se placer dans le dossier ou se trouve le fichier .vdi
+
+# 1 ----------+++
+$ cd VirtualBox/linux\ Mint\ 13/
+
+Ensuite
+
+# 2 ----------+++
+$ VBoxManage clonehd linux\ Mint\ 13.vdi --format RAW /home/jpantinoux/lm13.raw
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Clone hard disk created in format 'RAW'. UUID: 36c0ee7f-9d85-4172-97d5-498b5662b2e5
+
+J'ai déplacé l'image .raw dans mon répertoire personnel mais cela n'est pas indispensable
+
+Il faut maintenant passer en root pour utiliser la commande fdisk
+
+# 3 ----------+++
+$ su -
+Mot de passe :
+[root@marge:~] #
+
+On se déplace là où se trouve l'image .raw
+
+# 4 ----------+++
+# cd /home/jpantinoux/
+
+# 5 ----------+++
+# fdisk -lu lm13.raw
+Disque lm13.raw : 8589 Mo, 8589934592 octets
+255 têtes, 63 secteurs/piste, 1044 cylindres, total 16777216 secteurs
+Unités = secteurs de 1 * 512 = 512 octets
+Taille de secteur (logique / physique) : 512 octets / 512 octets
+taille d'E/S (minimale / optimale) : 512 octets / 512 octets
+Identifiant de disque : 0x0000607c
+
+Périphérique Amorce  Début        Fin      Blocs     Id  Système
+lm13.raw1   *        2048      194559       96256   83  Linux
+lm13.raw2          196606    16775167     8289281    5  Étendue
+lm13.raw5          196608     2148351      975872   82  partition d'échange Linux / Solaris
+lm13.raw6         2150400    16775167     7312384   83  Linux
+
+Ici le système contient 3 partitions
+lm13.raw1	qui contient /boot
+lm13.raw5	qui contient le swap
+lm13.raw6	qui contient / et /home
+
+Il faut donc transformer la partition  lm13.raw6 en .img
+Pour cela nous allons utiliser dd
+
+# 6 -----------+++
+# dd if=lm13.raw of=lm13.img bs=512 skip=2150400 count=16775167
+14626816+0 enregistrements lus
+14626816+0 enregistrements écrits
+7488929792 octets (7,5 GB) copiés, 418,398 s, 17,9 MB/s
+
+Ensuite créer un dossier dans /mnt
+
+# 7 -----------+++
+# mkdir /mnt/recup_mint
+
+Monter la partition dans le dossier créé :
+
+# 8 ----------+++
+# mount -o loop lm13.img /mnt/recup_mint
+
+On peut voir le résultat
+
+# 9 ----------+++
+[root@marge:/mnt/recup_mint] # ll
+total 100K
+drwxr-xr-x   2 root root 4,0K sept. 18 10:15 bin
+drwxr-xr-x   2 root root 4,0K sept. 18 00:27 boot
+drwxr-xr-x   5 root root 4,0K avril 23  2012 dev
+drwxr-xr-x 150 root root  12K sept. 18 22:30 etc
+drwxr-xr-x   3 root root 4,0K sept. 18 00:55 home
+lrwxrwxrwx   1 root root   32 sept. 18 01:05 initrd.img -> boot/initrd.img-3.2.0-23-generic
+lrwxrwxrwx   1 root root   33 sept. 18 00:28 initrd.img.old -> /boot/initrd.img-3.2.0-23-generic
+drwxr-xr-x  20 root root 4,0K sept. 18 10:17 lib
+drwx------   2 root root  16K sept. 18 00:27 lost+found
+drwxr-xr-x   2 root root 4,0K avril 23  2012 media
+drwxr-xr-x   2 root root 4,0K avril 19  2012 mnt
+drwxr-xr-x   5 root root 4,0K sept. 18 20:33 opt
+drwxr-xr-x   2 root root 4,0K avril 19  2012 proc
+drwx------  11 root root 4,0K sept. 18 22:30 root
+drwxr-xr-x   9 root root 4,0K sept. 18 01:10 run
+drwxr-xr-x   2 root root 4,0K sept. 18 19:11 sbin
+drwxr-xr-x   2 root root 4,0K mars   5  2012 selinux
+drwxr-xr-x   2 root root 4,0K avril 23  2012 srv
+drwxr-xr-x   2 root root 4,0K avril 14  2012 sys
+drwxrwxrwt  14 root root 4,0K sept. 19 21:19 tmp
+drwxr-xr-x  10 root root 4,0K avril 23  2012 usr
+drwxr-xr-x  12 root root 4,0K mai    3  2012 var
+lrwxrwxrwx   1 root root   29 sept. 18 01:05 vmlinuz -> boot/vmlinuz-3.2.0-23-generic
+
+Il suffit de se déplacer dans le dossier /home et de récupérer les données
+
+# -- Fin --

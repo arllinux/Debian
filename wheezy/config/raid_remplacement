@@ -1,0 +1,240 @@
+# -----------------------------
+Remplacer un disque d'un RAID 1
+# -----------------------------
+
+==============================================
+Résumé des commande (disque concerné sdb - partition 6)
+
+# cat /proc/mdstat 
+# fdisk /dev/sdb
+# ls -l /dev/disk/by-id/
+# sfdisk -d /dev/sdb > /root/sdb.save
+# mdadm /dev/md0 --fail /dev/sdb1
+# mdadm /dev/md1 --fail /dev/sdb5
+# mdadm /dev/md2 --fail /dev/sdb6
+# cat /proc/mdstat 
+# mdadm /dev/md0 --remove /dev/sdb1
+# mdadm /dev/md1 --remove /dev/sdb5
+# mdadm /dev/md2 --remove /dev/sdb6
+# shutdown -h now
+Retirer le disque et le remplacer
+Nouveau disque
+# sfdisk -d /dev/sda | sfdisk /dev/sdb
+# sfdisk --force /dev/sdb</root/sdb.save 
+# mdadm --manage /dev/md0 --add /dev/sdb1
+# mdadm --manage /dev/md1 --add /dev/sdb5
+# mdadm --manage /dev/md2 --add /dev/sdb6
+# cat /proc/mdstat 
+
+==============================================
+
+# cat /proc/mdstat 
+Personalities : [raid1] 
+md2 : active raid1 sda6[0]
+      486333304 blocks super 1.2 [2/1] [U_]
+      
+md1 : active (auto-read-only) raid1 sda5[0] sdb5[1]
+      1950708 blocks super 1.2 [2/2] [UU]
+      
+md0 : active raid1 sda1[0] sdb1[1]
+      96244 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+
+---------------------------------------------------------------
+
+# fdisk /dev/sdb
+
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
+
+Command (m for help): p
+
+Disk /dev/sdb: 500.1 GB, 500107862016 bytes
+255 heads, 63 sectors/track, 60801 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x000c70ac
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1          13       96256   fd  Linux raid autodetect
+Partition 1 does not end on cylinder boundary.
+/dev/sdb2              13       60802   488287233    5  Extended
+/dev/sdb5              13         256     1951744   fd  Linux raid autodetect
+/dev/sdb6             256       60802   486334464   fd  Linux raid autodetect
+
+---------------------------------------------------------------
+
+# ls -l /dev/disk/by-id/
+total 0
+lrwxrwxrwx 1 root root  9  9 nov.  15:53 ata-ST3500320AS_9QM2D768 -> ../../sda
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500320AS_9QM2D768-part1 -> ../../sda1
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500320AS_9QM2D768-part2 -> ../../sda2
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500320AS_9QM2D768-part5 -> ../../sda5
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500320AS_9QM2D768-part6 -> ../../sda6
+lrwxrwxrwx 1 root root  9 10 nov.  13:37 ata-ST3500820AS_5QM2MDN4 -> ../../sdb
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500820AS_5QM2MDN4-part1 -> ../../sdb1
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500820AS_5QM2MDN4-part2 -> ../../sdb2
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500820AS_5QM2MDN4-part5 -> ../../sdb5
+lrwxrwxrwx 1 root root 10  9 nov.  15:53 ata-ST3500820AS_5QM2MDN4-part6 -> ../../sdb6
+
+---/---
+
+--------------------------------------------------------------
+
+# sfdisk -d /dev/sdb > /root/sdb.save
+Warning: extended partition does not start at a cylinder boundary.
+DOS and Linux will interpret the contents differently.
+
+
+--------------------------------------------------------------
+
+# mdadm /dev/md0 --fail /dev/sdb1
+mdadm: set /dev/sdb1 faulty in /dev/md0
+# mdadm /dev/md1 --fail /dev/sdb5
+mdadm: set /dev/sdb5 faulty in /dev/md1
+# mdadm /dev/md2 --fail /dev/sdb6
+mdadm: set device faulty failed for /dev/sdb6:  No such device
+
+-------------------------------------------------------------
+
+# cat /proc/mdstat 
+Personalities : [raid1] 
+md2 : active raid1 sda6[0]
+      486333304 blocks super 1.2 [2/1] [U_]
+      
+md1 : active raid1 sda5[0] sdb5[1](F)
+      1950708 blocks super 1.2 [2/1] [U_]
+      
+md0 : active raid1 sda1[0] sdb1[1](F)
+      96244 blocks super 1.2 [2/1] [U_]
+      
+unused devices: <none>
+
+
+-------------------------------------------------------------
+
+# mdadm /dev/md0 --remove /dev/sdb1
+mdadm: hot removed /dev/sdb1 from /dev/md0
+# mdadm /dev/md1 --remove /dev/sdb5
+mdadm: hot removed /dev/sdb5 from /dev/md1
+# mdadm /dev/md2 --remove /dev/sdb6
+mdadm: hot remove failed for /dev/sdb6: No such device or address
+
+-------------------------------------------------------------
+
+Arreter l'UC
+# shutdown -h now
+Retirer le disque et le remplacer
+
+Nouveau disque
+
+# sfdisk -d /dev/sda | sfdisk /dev/sdb
+Warning: extended partition does not start at a cylinder boundary.
+DOS and Linux will interpret the contents differently.
+Checking that no-one is using this disk right now ...
+OK
+
+Disk /dev/sdb: 60801 cylinders, 255 heads, 63 sectors/track
+Old situation:
+Units = cylinders of 8225280 bytes, blocks of 1024 bytes, counting from 0
+
+   Device Boot Start     End   #cyls    #blocks   Id  System
+/dev/sdb1          0       -       0          0    0  Empty
+/dev/sdb2          0       -       0          0    0  Empty
+/dev/sdb3          0       -       0          0    0  Empty
+/dev/sdb4          0       -       0          0    0  Empty
+New situation:
+Units = sectors of 512 bytes, counting from 0
+
+   Device Boot    Start       End   #sectors  Id  System
+/dev/sdb1          2048    194559     192512  fd  Linux raid autodetect
+/dev/sdb2        196606 976771071  976574466   5  Extended
+/dev/sdb3             0         -          0   0  Empty
+/dev/sdb4             0         -          0   0  Empty
+/dev/sdb5        196608   4100095    3903488  fd  Linux raid autodetect
+/dev/sdb6       4102144 976771071  972668928  fd  Linux raid autodetect
+Warning: partition 1 does not end at a cylinder boundary
+
+sfdisk: I don't like these partitions - nothing changed.
+(If you really want this, use the --force option.)
+
+----------------------------------------------------------
+
+# sfdisk --force /dev/sdb</root/sdb.save 
+Checking that no-one is using this disk right now ...
+OK
+
+Disk /dev/sdb: 60801 cylinders, 255 heads, 63 sectors/track
+Old situation:
+Units = cylinders of 8225280 bytes, blocks of 1024 bytes, counting from 0
+
+   Device Boot Start     End   #cyls    #blocks   Id  System
+/dev/sdb1          0       -       0          0    0  Empty
+/dev/sdb2          0       -       0          0    0  Empty
+/dev/sdb3          0       -       0          0    0  Empty
+/dev/sdb4          0       -       0          0    0  Empty
+New situation:
+Units = sectors of 512 bytes, counting from 0
+
+   Device Boot    Start       End   #sectors  Id  System
+/dev/sdb1          2048    194559     192512  fd  Linux raid autodetect
+/dev/sdb2        196606 976771071  976574466   5  Extended
+/dev/sdb3             0         -          0   0  Empty
+/dev/sdb4             0         -          0   0  Empty
+/dev/sdb5        196608   4100095    3903488  fd  Linux raid autodetect
+/dev/sdb6       4102144 976771071  972668928  fd  Linux raid autodetect
+Warning: partition 1 does not end at a cylinder boundary
+Successfully wrote the new partition table
+
+Re-reading the partition table ...
+
+If you created or changed a DOS partition, /dev/foo7, say, then use dd(1)
+to zero the first 512 bytes:  dd if=/dev/zero of=/dev/foo7 bs=512 count=1
+(See fdisk(8).)
+
+-------------------------------------------------------------------
+
+# sfdisk --force /dev/sdb</root/sdb.save
+
+Disk /dev/sdb: 500.1 GB, 500107862016 bytes
+255 heads, 63 sectors/track, 60801 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0xe751e751
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1          14      112423+  fd  Linux raid autodetect
+/dev/sdb2              15       60801   488271577+   5  Extended
+/dev/sdb5              15         276     2104483+  fd  Linux raid autodetect
+/dev/sdb6             277       60801   486167031   fd  Linux raid autodetect
+
+------------------------------------------------------------
+
+# mdadm --manage /dev/md0 --add /dev/sdb1
+mdadm: added /dev/sdb1
+# mdadm --manage /dev/md1 --add /dev/sdb5
+mdadm: added /dev/sdb5
+# mdadm --manage /dev/md2 --add /dev/sdb6
+mdadm: added /dev/sdb6
+
+-------------------------------------------------------------
+
+# cat /proc/mdstat 
+Personalities : [raid1] 
+md2 : active raid1 sdb6[2] sda6[0]
+      486333304 blocks super 1.2 [2/1] [U_]
+      [=>...................]  recovery =  9.1% (44487488/486333304) finish=102.0min speed=72170K/sec
+      
+md1 : active raid1 sdb5[2] sda5[0]
+      1950708 blocks super 1.2 [2/2] [UU]
+      
+md0 : active raid1 sdb1[2] sda1[0]
+      96244 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+
+# --- Fin ---

@@ -1,0 +1,7 @@
+# /etc/hosts.allow
+
+ALL	:  localhost cerbere cerbere.labo.arles		    : ALLOW
+sshd	:  ALL				    		    : ALLOW
+portmap	:  192.168.2.0/255.255.255.0 *.labo.arles	    : ALLOW
+mountd	:  192.168.2.0/255.255.255.0 *.labo.arles	    : ALLOW
+

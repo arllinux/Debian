@@ -1,0 +1,67 @@
+# Installer une imprimante Canon sous Linux Mint Maya
+
+Dans un premier temps il faut installer de nouveau dépots
+
+Dans le site : http://www.le-libriste.fr/ubuntu/gestion-des-imprimantes-canon-sous-ubuntu/
+La procédure est expliquée mais elle se termine par une erreur car il faut redéfinir le chemin de la distribution
+
+Tout d'abord regarder la liste des imprimantes prises en charge sur le site indiqué ci-dessus
+
+Voici la procédure indiquée (avec les modifications à effectuer pour l'adapter à la maya (13)
+
+add-apt-repository ppa:michael-gruz/canon
+
+La réponse est la suivante :
+[root@marge:/usr/share/debian/maya/imp_canon] # add-apt-repository ppa:michael-gruz/canon
+You are about to add the following PPA to your system:
+ 
+ More info: https://launchpad.net/~michael-gruz/+archive/canon
+Press [ENTER] to continue or ctrl-c to cancel adding it
+
+Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --secret-keyring /tmp/tmp.Jd9cvmLisv --trustdb-name /etc/apt//trustdb.gpg --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyring /etc/apt/trusted.gpg.d//debian-archive-squeeze-automatic.gpg --keyring /etc/apt/trusted.gpg.d//debian-archive-squeeze-stable.gpg --keyring /etc/apt/trusted.gpg.d//debian-archive-wheezy-automatic.gpg --keyring /etc/apt/trusted.gpg.d//debian-archive-wheezy-stable.gpg --keyserver hkp://keyserver.ubuntu.com:80/ --recv 84E550CD36EC35430A66AC5A03396E1C3F7B4A1D
+gpg: demande de la clef 3F7B4A1D sur le serveur hkp keyserver.ubuntu.com
+gpg: clef 3F7B4A1D : clef publique « Launchpad Misakovi » importée
+gpg:       Quantité totale traitée : 1
+gpg:                     importées : 1  (RSA: 1)
+
+
+Le contenu du fichier /etc/apt/source.list.d/michael-gruz/canon/ubuntu est le suivant :
+
+deb http://ppa.launchpad.net/michael-gruz/canon/ubuntu precise main
+deb-src http://ppa.launchpad.net/michael-gruz/canon/ubuntu precise main
+
+Or si l'on recherche dans le dossier indiqué precise ne s'y trouve pas.
+
+Si l'on fait un 
+# apt-get update
+On obtient une erreur 404, car la page n'est pas trouvée
+
+En revenant dans le dépot avec un navigateur internet et en réduisant petit à petit le chemin on découvre que celui-ci a changé despuis la frappe du tuto.
+
+Il faut au final transformer la partie "canon" en "canon-stable"
+
+deb http://ppa.launchpad.net/michael-gruz/canon-stable/ubuntu precise main
+deb-src http://ppa.launchpad.net/michael-gruz/canon-stable/ubuntu precise main
+
+Enregistrer le fichier puis
+# apt-get update
+
+Plus d'erreur
+
+Maintenant recherchons les drivers :
+
+# apt-cache search mp240
+p   cnijfilter-mp240series                                                                             - IJ Printer Driver for Linux.                                                                                
+p   scangearmp-mp240series                                                                             - ScanGear MP for Linux.              
+
+Ensuite installation des drivers :
+
+# apt-get install cnijfilter-mp240series scangearmp-mp240series
+
+Ensuite il suffit de relancer cups :
+
+# /etc/init.d/cups restart
+
+Maintenant lorsque vous branchez l'inprimante celle-ci est prise en compte et le scanner fonctionne
+
+#---//---

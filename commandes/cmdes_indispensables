@@ -1,0 +1,101 @@
+# ------------------------
+'Ici sont regroupées les principales commandes pour'
+
+- Eteindre une machine distante
+  # ssh -p 18525 root@192.168.2.1 shutdown -h now
+	Explications complète ligne 22 (ctrl +g puis 21)
+
+- Syncroniser les dossiers sur des machines distantes
+  # rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e ssh $SOURCEDIR $SERVEUR:$DESTDIR
+	Explications complète ligne 49
+
+- Eteindre une machine distante dont le port ssh n'est pas celui par défaut.
+  # rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e "ssh -p 18525" $SOURCEDIR $SERVEUR:$DESTDIR
+	Explications complète ligne 49
+
+- Synchoniser des dossiers dont le nom contient des espaces
+   SOURCEDIR2='/media/PKBACK# 001'
+  # rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e "ssh -p 18525" "$SOURCEDIR2" $SERVEUR:
+	Explications complète ligne 87
+
+=============================================================================
+
+'Eteindre une machine distante'
+La commande minimale est :
+# ssh <nom>@<adresse_IP> shutdown -h now
+
+#!/bin/bash
+
+# Teste par un ping si le serveur est allumé
+ping -c 1 192.168.2.1 > /dev/null
+
+# Si le retour de la commande ($?) est égal à 0
+if [ $? = "0" ]
+# Alors la commande s'exécute
+then
+	# Ouvre un tunnel ssh par le port indiqué vers la machine B et envoie
+	# le signal d'extinction
+	ssh -p 18525 root@192.168.2.1 shutdown -h now
+# sinon				
+else
+	# Affiche un message pour indiquer que le serveur est éteind
+	read -p "!!!!! Le serveur est déjà éteind.... Ctrl + c pour fermer la
+	fenêtre"
+fi
+
+
+=============================================================================
+
+
+'Script pour syncroniser sur une machine distante les dossiers et partitions'
+
+#!/bin/bash
+
+# save_cerbere
+# --\\\\\--
+
+Date=$(date +%d-%m-%Y)
+Heure=$(date +%T)
+SOURCEDIR='/home/jpantinoux/Documents'
+DESTDIR='/srv/samba/public/save_doc_jp'
+SERVEUR="root@192.168.2.1"
+
+# --\\\\\--
+
+# Le script présent dans la machine A vérifie si la machine B est connectée.
+# Si c'est le cas exécute le script.
+
+echo -e "----\nLancement sauvegarde à : $Heure le $Date"
+ping -c 1 192.168.2.1 > /dev/null
+if [ $? = "0" ]
+then
+	rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e "ssh -p 18525" $SOURCEDIR $SERVEUR:$DESTDIR
+	Date=$(date +%d-%m-%Y)
+	Heure=$(date +%T)
+	echo -e "----\nFin de la sauvegarde à : $Heure le $Date"
+else
+	read -p "!!!!! La synchronisation n'a pu être effectuée, serveur absent : interruption à $Heure... Ctrl + c pour fermer la fenetre"
+
+fi
+
+# shutdown -h now
+exit 0
+
+# --\\\\\--
+
+==============================================================================
+
+'Syncronisation de dossiers dont le nom contient des espaces'
+
+#!/bin/bash
+
+# Pour déclarer la variable on écrit le nom du dossier, de la partition, du
+# périphérique comme il est.
+SOURCEDIR2='/media/PKBACK# 001'
+
+# Pour sauvegarder l'espace dans la variable il faut encadrer celle-ci de
+# guillements "$SOURCEDIR2"
+rsync -av --del --stats --exclude=.thumbnails/ --exclude=.Trash/ --exclude=*.tmp --exclude=*.iso -e "ssh -p 18525" "$SOURCEDIR2" $SERVEUR:
+
+
+=============================================================================

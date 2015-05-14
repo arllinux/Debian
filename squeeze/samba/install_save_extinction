@@ -1,0 +1,38 @@
+#--------------------------------------------------------
+Installer une sauvegarde à l'extinction sur 10.04
+
+1
+Suivre la procédure d'échange de clés ssh
+svn debian
+Voir fichier : /usr/share/debian/squeeze/samba/RSA_keys
+
+2
+Après avoir échangé les clés en se connectant de la manière suivante :
+# ssh root@192.168.0.5
+Il faut mettre en place le fichier qui permettra de lancer la sauvegarde
+et l'extintion de la machine client.
+
+3
+svn debian
+A la racine de l'utilisateur créer un dossier "bin"
+Dans ce dossier placer le script "save_cerbere"
+
+4
+Ajouter la ligne suivante dans le fichier "sudoers"
+# visudo -q
+En bas du fichier
+
+aevx ALL=NOPASSWD: /sbin/shutdown
+
+5
+Mettre le bouton dans la barre des taches
+	Lanceur d'application personnalisé
+		Type : Application dans un terminal
+		Nom: Sauvegarde et fermeture
+		Commande : /home/aevx/bin/sav_cerbere
+		Commentaire : Sauvegarde
+
+6
+Personnaliser l'icone :
+/usr/share/icons/gnome/24x24/actions/exit.png
+

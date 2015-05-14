@@ -1,0 +1,19 @@
+# ----------------------------------------------------------
+Quelques commandes pour pratiquer le copier coller dans vim
+# ----------------------------------------------------------
+
+Dans le mode commande "yy" ou "Y"
+	Copie la ligne complète sur laquelle nous sommes
+
+Dans le mode commande "y$" 
+	Copie du curseur jusqu'a la fin de la ligne
+
+Dans le mode commande "yw"
+	Copie le mot sur lequel nous sommes (si le curseur est sur la première
+	lettre du mot)
+
+Dans le mode visuel (il faut avoir appuyé sur la touche "v" lorsque l'on est en
+mode commande.
+	Il faut appuyer sur "l" pour étendre la sélection vers la droite
+	Il faut appuyer sur "h" pour étendre la sélection vers la gauche
+	Une fois la sélection faite appuyer sur "y", se placer pour coller, puis "p"

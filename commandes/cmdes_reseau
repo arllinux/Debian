@@ -1,0 +1,18 @@
+# -------------------------------------------------------
+Les commandes réseau et le script pour vérifier le réseau
+
+$ ping -c 5 192.168.0.1
+
+$ ifconfig
+
+$ ifconfig eth0 down
+$ ifconfig eth0 up
+
+# La commande arp permet de mettre en correspondance des adresses IP et les adresses MAC en manipulant la table ARP du système.
+# arp -an
+
+$ route -n
+
+$ netstat -ntl
+
+$ nmap 192.168.2.1
