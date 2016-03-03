@@ -15,16 +15,16 @@ else
 
 	# Installation du parefeu
         echo ":: Installation du parefeu ::"
-	cp $CWD/../firewall/etc/default/firewall /etc/default/firewall
+	cp $CWD/../../parefeu/etc/default/firewall /etc/default/firewall
 	chmod 0644 /etc/default/firewall
 
 	mkdir /etc/firewall
-	cp $CWD/../firewall/etc/firewall/firewall-start /etc/firewall/firewall-start
+	cp $CWD/../../parefeu/etc/firewall/firewall-start /etc/firewall/firewall-start
 	chmod 0700 /etc/firewall/firewall-start
-	cp $CWD/../firewall/etc/firewall/firewall-stop /etc/firewall/firewall-stop
+	cp $CWD/../../parefeu/etc/firewall/firewall-stop /etc/firewall/firewall-stop
 	chmod 0700 /etc/firewall/firewall-stop
 
-	cp $CWD/../firewall/etc/init.d/firewall /etc/init.d/firewall
+	cp $CWD/../../parefeu/etc/init.d/firewall /etc/init.d/firewall
 	chmod 0755 /etc/init.d/firewall
 	
 	# service firewall restart

@@ -1,0 +1,69 @@
+#####################################################################
+---------------------------------------------------------------------
+Lancement sauvegarde le : 29-02-2016 à 03:26:22
+---------------------------------------------------------------------
+PING 195.154.73.137 (195.154.73.137) 56(84) bytes of data.
+64 bytes from 195.154.73.137: icmp_req=1 ttl=55 time=34.9 ms
+
+--- 195.154.73.137 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 34.928/34.928/34.928/0.000 ms
+sending incremental file list
+actions.html
+actualites.html
+contacts.html
+index.html
+liens.html
+photos_lunel_160116.html
+photos_moteur_speed.html
+photos_nimes_260216.html
+photos_smdl_300116.html
+style.css
+texte_speed.html
+version_grandbandeau.css
+illustrations/
+illustrations/001_0116.jpg
+illustrations/002_0116.jpg
+illustrations/003_0116.jpg
+illustrations/004_0116.jpg
+illustrations/006_0116.jpg
+illustrations/007_0116.jpg
+illustrations/01_wiki.jpg
+illustrations/02_wiki.jpg
+illustrations/03_wiki.jpg
+illustrations/04_wiki.jpg
+illustrations/05_wiki.jpg
+illustrations/bandeau_version2.jpg
+illustrations/bg_menu_ressources_css.gif
+illustrations/computer.png
+illustrations/elementary.jpg
+illustrations/logo_www_grand.jpg
+illustrations/logoarles.jpg
+illustrations/mediatequelunel.png
+illustrations/mint.jpg
+illustrations/pin_cache.jpg
+illustrations/recherche_little.jpg
+illustrations/smdl.jpg
+illustrations/valid_css_80x15_2.png
+illustrations/valid_xhtml10_80x15_2.png
+illustrations/wikic.jpg
+illustrations/www.jpg
+
+Number of files: 39
+Number of files transferred: 38
+Total file size: 1046310 bytes
+Total transferred file size: 1046310 bytes
+Literal data: 1046310 bytes
+Matched data: 0 bytes
+File list size: 881
+File list generation time: 0.002 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 1048926
+Total bytes received: 738
+
+sent 1048926 bytes  received 738 bytes  67720.26 bytes/sec
+total size is 1046310  speedup is 1.00
+---------------------------------------------------------------------
+Fin de la sauvegarde le : 29-02-2016 à 03:26:22
+---------------------------------------------------------------------
+#####################################################################
