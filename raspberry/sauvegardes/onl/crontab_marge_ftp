@@ -1,0 +1,2 @@
+# m h  dom mon dow   command
+0 6 * * * /root/bin/save_vers_ftp.sh

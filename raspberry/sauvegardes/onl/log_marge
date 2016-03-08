@@ -1,0 +1,63 @@
+---------------------------------------------------------------------
+Lancement sauvegarde le : 07-03-2016 à 23:05:45
+---------------------------------------------------------------------
+sending incremental file list
+./
+actualites_articles/
+actualites_pages_photos/
+illustrations/
+illustrations/001_lunel_160116/
+illustrations/002_nimes_wiki_250216/
+illustrations/page_accueil/
+illustrations/page_actualites/
+
+Number of files: 55
+Number of files transferred: 0
+Total file size: 1162910 bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 1493
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 1678
+Total bytes received: 184
+
+sent 1678 bytes  received 184 bytes  3724.00 bytes/sec
+total size is 1162910  speedup is 624.55
+---------------------------------------------------------------------
+Fin de la sauvegarde le : 07-03-2016 à 23:05:45
+---------------------------------------------------------------------
+#####################################################################
+Lancement sauvegarde le : 08-03-2016 à 18:06:45
+---------------------------------------------------------------------
+sending incremental file list
+./
+actualites_articles/
+actualites_pages_photos/
+illustrations/
+illustrations/001_lunel_160116/
+illustrations/002_nimes_wiki_250216/
+illustrations/page_accueil/
+illustrations/page_actualites/
+illustrations/page_actualites/wikic.jpg
+
+Number of files: 55
+Number of files transferred: 1
+Total file size: 1163917 bytes
+Total transferred file size: 18052 bytes
+Literal data: 18052 bytes
+Matched data: 0 bytes
+File list size: 1501
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 19778
+Total bytes received: 200
+
+sent 19778 bytes  received 200 bytes  39956.00 bytes/sec
+total size is 1163917  speedup is 58.26
+---------------------------------------------------------------------
+Fin de la sauvegarde le : 08-03-2016 à 18:06:45
+---------------------------------------------------------------------
+#####################################################################
+                                                                      

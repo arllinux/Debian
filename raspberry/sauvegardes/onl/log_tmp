@@ -1,0 +1,31 @@
+Lancement sauvegarde le : 08-03-2016 à 19:30:50
+---------------------------------------------------------------------
+sending incremental file list
+./
+actualites_articles/
+actualites_pages_photos/
+illustrations/
+illustrations/001_lunel_160116/
+illustrations/002_nimes_wiki_250216/
+illustrations/page_accueil/
+illustrations/page_actualites/
+
+Number of files: 55
+Number of files transferred: 0
+Total file size: 1163917 bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 1501
+File list generation time: 0.001 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 1686
+Total bytes received: 184
+
+sent 1686 bytes  received 184 bytes  1246.67 bytes/sec
+total size is 1163917  speedup is 622.42
+---------------------------------------------------------------------
+Fin de la sauvegarde le : 08-03-2016 à 19:30:51
+---------------------------------------------------------------------
+Mise à jour des autorisations des fichiers dans le répertoire commun
+#####################################################################

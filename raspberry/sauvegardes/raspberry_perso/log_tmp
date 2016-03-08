@@ -1,0 +1,30 @@
+#####################################################################
+---------------------------------------------------------------------
+Lancement sauvegarde le : 08-03-2016 à 18:58:15
+---------------------------------------------------------------------
+PING 195.154.73.137 (195.154.73.137) 56(84) bytes of data.
+64 bytes from 195.154.73.137: icmp_req=1 ttl=55 time=35.3 ms
+
+--- 195.154.73.137 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 35.335/35.335/35.335/0.000 ms
+sending incremental file list
+
+Number of files: 48
+Number of files transferred: 0
+Total file size: 1141530 bytes
+Total transferred file size: 0 bytes
+Literal data: 0 bytes
+Matched data: 0 bytes
+File list size: 1267
+File list generation time: 0.003 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 1291
+Total bytes received: 19
+
+sent 1291 bytes  received 19 bytes  873.33 bytes/sec
+total size is 1141530  speedup is 871.40
+---------------------------------------------------------------------
+Fin de la sauvegarde le : 08-03-2016 à 18:58:16
+---------------------------------------------------------------------
+#####################################################################
