@@ -1,0 +1,31 @@
+# ===================
+# Erreur au démarrage
+# ===================
+
+Au démarrage d'Apache, il est possible que celui-ci ne soit pas capable de
+déterminer un nom de domaine. Ce message sera affiché dans le terminal :
+
+# service apache2 start
+[....] Starting web server: apache2apache2: Could not reliably determine the
+server's fully qualified domain name, using 127.0.1.1 for ServerName
+. ok 
+
+# Pour corriger l'erreur :
+
+Ouvrir le fichier :
+# vim /etc/apache2/apache2.conf
+
+A la fin du fichier inclure :
+
+...
+# Suppression message erreur au lancement du serveur :
+# apache2: Could not reliably determine the server's fully qualified domain
+# name,
+# using 127.0.1.1 for ServerName
+ServerName localhost
+
+# Relancer le serveur :
+# service apache2 restart
+[ ok ] Restarting web server: apache2 ... waiting .
+
+===/===
