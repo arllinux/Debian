@@ -1,0 +1,52 @@
+# Sources
+http://www.it-connect.fr/creer-modifier-ou-supprimer-un-utilisateur-avec-la-console-sql%ef%bb%bf/
+
+# Entrer dans mysql
+mysql -u root -p
+Enter password:
+
+# Charger la BDD
+mysql> use nacicca;
+Database changed
+
+# Voir les droits d'un utilisateur
+mysql> show grants for "nacicca"@"localhost";
++----------------------------------------------------------------------------------------------------------------+
+| Grants for nacicca@localhost                                                                                   |
++----------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'nacicca'@'localhost' IDENTIFIED BY PASSWORD '*2470C0C06DEE42FD1618BB99005ADCA2EC9D1E19' |
+| GRANT ALL PRIVILEGES ON `nacicca`.* TO 'nacicca'@'localhost'                                                   |
++----------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+# Voir les BDD
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| nacicca            |
+| performance_schema |
++--------------------+
+4 rows in set (0.00 sec)
+
+# Lister les utilisateur
+mysql> select user,host,password from mysql.user;
++------------------+-----------+-------------------------------------------+
+| user             | host      | password                                  |
++------------------+-----------+-------------------------------------------+
+| root             | localhost | *6DCDF3999CDA71114974C26FAB9D51EDDB8B3060 |
+| nacicca          | localhost | *6DCDF3999CDA71114974C26FAB9D51EDDB8B3060 |
+| root             | 127.0.0.1 | *CF8D7395CDC2D6A7590A16116B05102C4880FB1E |
+| root             | ::1       | *CF8D7395CDC2D6A7590A16116B05102C4880FB1E |
+| debian-sys-maint | localhost | *4C733C8B1F5F04E95E5519A59D6D5BFF4FE3D33D |
++------------------+-----------+-------------------------------------------+
+5 rows in set (0.00 sec)
+
+# Ajouter, modifier le mot de passe d'un utilisateur
+mysql> SET PASSWORD FOR "nacicca"@"localhost" = PASSWORD("mdp");
+
+
+===/===
+
