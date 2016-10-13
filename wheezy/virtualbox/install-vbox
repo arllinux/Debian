@@ -7,6 +7,23 @@ Ex sur Debian wheezy
 
 # aptitude install virtualbox
 
+
+
+
+
+Modifications du 14 octobre 2016
+# uname -r
+3.19.0-32-generic
+
+# Remplacer 'uname -r' par le retour de la commande ci-dessus
+# apt-get install build-essential dkms gcc linux-headers-`uname -r`
+
+Fin modifications du 14 octobre 2016
+
+
+
+
+
 Puis il faut ajouter le groupe vboxusers à l'utilisateur
 
 # usermod -a -G vboxusers jpantinoux
@@ -23,6 +40,48 @@ Un message demande si vous souhaitez les télécharger
 
 Une fois le téléchargement terminé (voir la barre de progression en bas de la fenêtre à gauche,
 quitter Virtual Box, puis :
+
+
+
+
+
+
+Procédure du 14 octobre 2016
+
+# mkdir /tmp/vboxadd
+
+# cp -r /media/cdrom0/* /tmp/vboxadd/
+
+# cd /tmp/vboxadd/
+
+# ./VBoxLinuxAdditions.run
+
+Vous devriez obtenir quelque chose de similaire :
+
+Verifying archive integrity... All good.
+Uncompressing VirtualBox 4.3.30 Guest Additions for Linux............
+VirtualBox Guest Additions installer
+Copying additional installer modules ...
+Installing additional modules ...
+Removing existing VirtualBox DKMS kernel modules ...done.
+Removing existing VirtualBox non-DKMS kernel modules ...done.
+Building the VirtualBox Guest Additions kernel modules ...done.
+Doing non-kernel setup of the Guest Additions ...done.
+Starting the VirtualBox Guest Additions ...done.
+Installing the Window System drivers
+Installing X.Org Server 1.16 modules ...done.
+Setting up the Window System to use the Guest Additions ...done.
+You may need to restart the the Window System (or just restart the guest system)
+to enable the Guest Additions.
+
+Installing graphics libraries and desktop services components ...done.
+
+
+Fin procédure du 14 octobre 2016
+
+
+
+
 
 Créer un répertoire dans /mnt
 # mkdir cdrom
