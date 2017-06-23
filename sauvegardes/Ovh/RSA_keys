@@ -1,0 +1,206 @@
+#--------------------------------------------------
+Comment se connecter via ssh à une machine distante
+#--------------------------------------------------
+
+Jean-Pierre Antinoux 12-2010
+
+1 - Se connecter via ssh
+2 - Se connecter sans taper le mot de passe à chaque fois
+3 - Interdire la connection directe à root
+4 - N'autoriser la connection que par échange de clé cryptées
+
+---------------------------------
+Dans machine client
+(Pour l'instant le port du serveur est toujours le port traditionnel : 22,
+La connection par root est autorisée)
+---------------------------------
+
+Première connexion :
+Lorsque l'on essaie de se connecter pour la première fois à
+une machine distante par exemple :
+
+$ ssh utilisateur@192.168.0.2
+
+On obtient le message suivant :
+
+The authenticity of host '192.168.0.2 (192.168.0.2)' can't be established.
+RSA key fingerprint is d7:50:a1:c4:8e:20:52:53:be:2b:77:44:4d:37:81:fc.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.0.2' (RSA) to the list of known hosts.
+utilisateur@192.168.0.2's password: 
+[utilisateur@acer1350 ~]$
+
+Ce message nous indique dans ses deux premières lignes que l'authenticité de la connexion n'a
+pu être établie et qu'un clé de criptage viens d'être créée.
+Ensuite on nous demande si nous desirons continuer. Nous sommes invité à répondre par : yes
+Ensuite on nous indique cette machine va être ajoutée à la liste des clients connus
+Puis on tape le mot de passe de l'utilisateur de la machine distante.
+
+Enfin on arrive sur l'invite de commande de l'autre machine :
+[utilisateur@acer1350 ~]$
+
+---------------------------------
+La clé à changée : comment faire ?
+(dans machine locale)
+---------------------------------
+
+Si lors d'une tentative de connexion vous obtenez ce message en retour :
+
+[utilisateur@prunelle ~]$ ssh utilisateur:g .@192.168.0.2
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+d7:50:a1:c4:8e:20:52:53:be:2b:77:44:4d:37:81:fc.
+Please contact your system administrator.
+Add correct host key in /home/utilisateu/.ssh/known_hosts to get rid of this message.
+Offending key in /home/utilisateur/.ssh/known_hosts:1
+RSA host key for 192.168.0.2 has changed and you have requested strict checking.
+Host key verification failed.
+
+Il s'agit dans ce cas soit d'un attaque comme indiquée dans le message, soit plus simplement
+d'un reinitialisation du système qui à détruit ou modifié la clé. Et donc la connexion
+n'est plus possible.
+
+---------------------------------
+Suppression de l'ancienne clé
+(dans machine locale)
+---------------------------------
+
+La ou les clés sont contenues dans le fichier /home/utilisateur/.ssh/known_hosts
+Pour supprimer l'une d'entre elles, il faut exécuter la commande suivante :
+
+
+[utilisateur@prunelle .ssh]$ ssh-keygen -R 192.168.0.2 (IP de la machine à contacter)
+
+
+/home/utilisateur/.ssh/known_hosts updated.
+Original contents retained as /home/utilisateur/.ssh/known_hosts.old
+
+Il nous est indique que la modification dans le fichier à été faite.
+De plus dans sa grande magnificence le système à généré une copie de
+l'ancien fichier qu'il a nommé : known_hosts.old
+
+On peut, si le fichier ne contient qu'une seule clé, directement le supprimer :
+
+$ rm -rf known_hosts
+
+----------------------------------
+Générer une nouvelle clé
+(dans machine locale)
+----------------------------------
+
+[utilisateur@prunelle ~]$ ssh-keygen -t rsa
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/utilisateur/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/utilisateur/.ssh/id_rsa.
+Your public key has been saved in /home/utilisteur/.ssh/id_rsa.pub.
+The key fingerprint is:
+6e:ce:96:fe:07:75:c3:27:61:58:a2:8e:7b:76:eb:fe utilisateur@prunelle
+[utilisteur@prunelle ~]$ 
+
+----------------------------------
+Vérification des fichiers créés
+(dans machine locale)
+----------------------------------
+
+[utilisateur@prunelle ~]$ cd .ssh
+[utilisateur@prunelle .ssh]$ ls -l
+total 12
+-rw------- 1 utilisateur jpantinoux 1675 déc 18 16:32 id_rsa
+-rw-r--r-- 1 utilisateur jpantinoux  401 déc 18 16:32 id_rsa.pub
+-rw-r--r-- 1 utilisateur jpantinoux 1217 oct 30 00:08 known_hosts
+[utilisateur:g .@prunelle .ssh]$
+
+--------------------------------------------
+Envoie la clé publique à la machine distante
+(à partirde la machine locale)
+--------------------------------------------
+
+[utilisateur@prunelle .ssh]$ ssh-copy-id -i id_rsa.pub utilisateur@192.168.0.2
+10
+utilisateur@192.168.0.2's password: 
+Now try logging into the machine, with "ssh 'utilisateur@192.168.0.2'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+[utilisateur@prunelle .ssh]$ 
+
+# Si le port est autre que le port 22 il faut écrire la commande comme ceci
+[utilisateur@prunelle .ssh]$ ssh-copy-id -i id_rsa.pub "utilisateur@192.168.0.2 -p 18525"
+
+-----------------------------------------------
+Accéder à la machine distante sans mot de passe
+(dans machine locale)
+-----------------------------------------------
+
+Ensuite on peut accéder à la machine distante sans taper de mot de passe. On peut également n'indiquer que l'adresse IP si le nom d'utilisateur est le même.
+
+[utilisateur@prunelle .ssh]$ ssh 192.168.0.2
+Last login: Sat Dec 18 16:59:22 2010 from 192.168.0.1
+[utilisateur@acer1350 ~]$ 
+
+
+----------------------------------------------
+Résultat dans la machine distante
+----------------------------------------------
+Voici ce que l'on obtient dans la machine distante
+
+Extrait du fichier /home/utilisateur/ après un ls -la :
+
+
+/.../
+
+drwr------   2 utilisateur utilisateur   4096 18 déc.  17:14 .ssh
+drwxrwxr-x.  2 utilisateur utilisateur   4096 12 déc.  23:01 .themes
+drwx------.  4 utilisateur utilisateur   4096 12 déc.  23:01 .thumbnails
+drwx------.  3 utilisateur utilisateur   4096 13 déc.  01:52 .thunderbird
+-rw-------   1 utilisateur utilisateur    934 18 déc.  17:14 .viminfo
+-rw-------   1 utilisateur utilisateur   1704 18 déc.  15:29 .xsession-errors
+-rw-------.  1 utilisateur utilisateur 129947 13 déc.  02:07 .xsession-errors.old
+[utilisateur@acer1350 ~]$ 
+
+[utilisateur@acer1350 ~]$ cd .ssh
+[utilisateur@acer1350 .ssh]$ ls -l
+total 4
+-rw------- 1 utilisateur utilisateur 401 18 déc.  17:10 authorized_keys
+[utilisateur@acer1350 .ssh]$ 
+
+Ensuite il faut empécher l'accès à la machine en root et 
+ne pouvoir recevoir des échanges d'autres serveurs que par des clés duement autentifiées.
+
+Il faut se connecter au serveur par un compte utilisateur simple
+Passer en administrateur
+Ouvrir le fichier /etc/ssh/sshd.config
+# What ports, IPs and protocols we listen for
+Port (numéro de votre choix)
+Pour avoir la liste des ports utilisés par le système : more /etc/services
+Pour empécher la connection en root sauf par échange de mot de passe
+# Authentication:
+# LoginGraceTime 120
+# # 1ère ligne commentée, 2ème ligne décommentée pour seulement connection par
+# mot de passe connu
+# PermitRootLogin yes
+PermitRootLogin without-password
+StrictModes yes
+Relancer le service
+# systemctl restart ssh.service
+Se déconnecter
+Maintenant pour se connecter il faut passer par un utilisateur
+en précisant le port de connection.
+# ssh -p xxxxxx utilisateur@192.168.0.2
+Mot de passe :
+Si l'on doit écrire un script pour faire une sauvegarde par exemple
+Il faut intégrer l'adresse de la machine avec le port
+Pour se connecter de l'extérieur à cette machine il faut pratiquer de la sorte :
+# ssh -D xxxxxx utilisateur@xxx.xxx.xxx.xxx
+
+

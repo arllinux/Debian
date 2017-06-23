@@ -1,0 +1,31 @@
+Mise en place des scripts de sauvegarde.
+
+# 1
+
+Créer à la racine de "root" un répertoire "bin"
+
+Ce répertoire devra contenir 1 script et 1 fichier txt
+
+# rotation_10jours.sh
+qui permet la rotation des sauvegardes pendant 10 jours
+(le nombre de jours est à adapter en fonction des besoins)
+Ce script est appelé par "save_apartir_regards.sh"
+
+# logfile_resspa13.ovh.txt
+Celui-ci contient le résultat des sauvegardes jour par jour.
+
+
+# 2
+Placer le script :
+# save_apartir_regards.sh
+à la racine de "root"
+
+# 3
+Suivez les commandes inscrite dans le fichier "RSA_keys"
+pour pratiquer à l'échange des clés pour SSH.
+
+# 4
+Pour tester la procédure (après avoir suivi les étapes précédantes) :
+# /bin/bash -x ./save_apartir_regards.sh
+
+

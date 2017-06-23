@@ -1,0 +1,9 @@
+
+Disque /dev/sda : 91201 cylindres, 255 têtes, 63 secteurs/piste
+Unités : cylindres de 8225280 octets, blocs de 1024 octets, décompte à partir de 0
+
+   Périph Amor Début     Fin   nº cyl.  nº blocs  Id. Système
+/dev/sda1          0+    522-    523-   4198400   fd  RAID Linux autodétecté
+/dev/sda2   *    522+    586-     64-    512000   fd  RAID Linux autodétecté
+/dev/sda3        586+  91201-  90615- 727862272   fd  RAID Linux autodétecté
+/dev/sda4          0       -       0          0    0  Vide
