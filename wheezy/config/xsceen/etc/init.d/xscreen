@@ -2,6 +2,6 @@
 
 # Permet de fixer l'extinction de l'écran "à jamais" dans le serveur X
 
-xset dpms 0 0 0
+xset s off
 
 exit 0
