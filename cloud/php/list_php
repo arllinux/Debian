@@ -1,0 +1,17 @@
+# liste des paquets php nécessaires
+
+php5-fpm 
+php5-mysql 
+php-apc 
+php5-curl 
+php5-gd 
+php5-intl 
+php-pear 
+php5-imagick 
+php5-imap 
+php5-mcrypt 
+ph5-memcache 
+php5-sqlite 
+php5-xmlrpc 
+php5-xsl
+

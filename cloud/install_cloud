@@ -1,0 +1,87 @@
+###################################################
+# Après avoir installé le serveur chez OVH par    #
+# le Manager "So You Start", se connecter par ssh #
+###################################################
+
+# JPA juillet 2017
+
+# ssh root@nomdedomaine
+
+1
+Modifier le fichier "hostname"
+# /etc/hostname
+ns3265534
+
+Puis le fichier "hosts"
+/etc/hosts
+# Do not remove the following line, or various programs
+# # that require network functionality will fail.
+# 127.0.0.1 localhost.localdomain localhost
+# 37.59.52.161            ns3265534.resspa13.ovh  ns3265534
+# 2001:41d0:0008:6fa1::   ns3265534.resspa13.ovh  ns3265534
+
+Installation
+1
+# apt-get install mysql-server mysql-client
+root mysql
+mdp
+
+2
+# apt-get install nginx
+ngnix bloque tout par défaut
+
+3
+test sur navigateur
+resspa13.ovh → ok
+
+4
+# apt-get install php5.fpm
+nginx ne sait pas lire le php
+
+5
+Lancer le script
+# ./install-php
+pour installer tous les paquets php nécessaires
+
+6
+# apt-get install phpmyadmin
+pas de sélection
+db config → oui
+Fenêtre ncurses :
+root mysql
+mdp
+→ confirmation
+
+7
+Paramétrage nginx
+sites-available = sites disponibles
+sites-enabled = sites activés
+
+Paramétrage fichier /etc/nginx/sites-available/default
+Voir ici : https://wiki.ocarpels.fr/doku.php?id=default.conf
+le contenu du fichier et le copier
+
+Test :
+# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+Modifier le fichier default pour accéder à phpmyadmin
+
+resspa13.ovh/phpmyadmin/
+
+Si test ok
+
+# --- letsencrypt
+
+# cd /tmp/
+# git clone https://github.com/letsencrypt/letsencrypt
+
+# service nginx stop
+# cd letsencrypt/
+ls -lh
+# ./certbot-auto certonly --standalone
+# nginx -t
+# service nginx start
+# cd /etc/nginx/sites-enabled/
+# service nginx reload
