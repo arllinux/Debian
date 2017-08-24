@@ -30,7 +30,7 @@ do
 	fi
 done
 
-# Faire une copie (-al = archives + liens durs) de horairejour.0 vers jour.1
+# Faire une copie (-al = archives + liens durs) de Hjour.0 vers jour.1
 if [ -d $DEST/$H.0 ] ; then
 	cp -al $DEST/$H.0 $DEST/$D.1 ;
 	touch $DEST/$H.0
