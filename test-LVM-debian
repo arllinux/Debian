@@ -1,0 +1,40 @@
+# df -h
+Rapport d'utilisation des espaces disques :
+
+Filesystem                Size      Used Available Use% Mounted on
+none                    196.1M    116.0K    196.0M   0% /run
+devtmpfs                959.7M         0    959.7M   0% /dev
+/dev/mapper/VG--2-VL--3
+                          2.7T      1.0G      2.5T   0% /target
+/dev/sda1               180.0M     35.5M    131.2M  21% /target/boot
+/dev/mapper/VG--2-VL--3
+                          2.7T      1.0G      2.5T   0% /dev/.static/dev
+devtmpfs                959.7M         0    959.7M   0% /target/dev
+
+
+
+# lvmdiskscan
+Analyser toutles supports visibles par LVM2
+
+  /dev/VG-swap/VL-swap [       1.86 GiB] 
+  /dev/sda1            [     190.00 MiB] 
+  /dev/VG-2/VL-3       [       2.73 TiB] 
+  /dev/sda2            [       1.86 GiB] LVM physical volume
+  /dev/sda5            [     929.46 GiB] LVM physical volume
+  /dev/sdb1            [     931.51 GiB] LVM physical volume
+  /dev/sdc1            [     931.51 GiB] LVM physical volume
+  1 disk
+  2 partitions
+  0 LVM physical volume whole disks
+  4 LVM physical volumes
+
+
+# pvscan
+Analyser tous les disques volumes physiques :
+Résultt de la commande :
+
+  PV /dev/sda5   VG VG-2            lvm2 [929.46 GiB / 0    free]
+  PV /dev/sdb1   VG VG-2            lvm2 [931.51 GiB / 0    free]
+  PV /dev/sdc1   VG VG-2            lvm2 [931.51 GiB / 0    free]
+  PV /dev/sda2   VG VG-swap         lvm2 [1.86 GiB / 0    free]
+  Total: 4 [2.73 TiB] / in use: 4 [2.73 TiB] / in no VG: 0 [0   ]
