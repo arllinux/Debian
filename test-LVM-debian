@@ -1,3 +1,7 @@
+################################
+# TESTS PENDANT L'INSTALLATION # 
+################################ 
+
 # df -h
 Rapport d'utilisation des espaces disques :
 
@@ -31,10 +35,58 @@ Analyser toutles supports visibles par LVM2
 
 # pvscan
 Analyser tous les disques volumes physiques :
-Résultt de la commande :
+Résultat de la commande :
 
   PV /dev/sda5   VG VG-2            lvm2 [929.46 GiB / 0    free]
   PV /dev/sdb1   VG VG-2            lvm2 [931.51 GiB / 0    free]
   PV /dev/sdc1   VG VG-2            lvm2 [931.51 GiB / 0    free]
   PV /dev/sda2   VG VG-swap         lvm2 [1.86 GiB / 0    free]
   Total: 4 [2.73 TiB] / in use: 4 [2.73 TiB] / in no VG: 0 [0   ]
+
+##################################################
+# TEST POST INSTALLATION AVEC LES MÊME COMMANDES #
+##################################################
+
+# df -lh
+Rapport d'utilisation des espaces disques
+
+Sys. de fichiers        Taille Utilisé Dispo Uti% Monté sur
+udev                      970M       0  970M   0% /dev
+tmpfs                     197M    3,0M  194M   2% /run
+/dev/mapper/VG--2-VL--3   2,7T    1,1G  2,6T   1% /
+tmpfs                     981M       0  981M   0% /dev/shm
+tmpfs                     5,0M       0  5,0M   0% /run/lock
+tmpfs                     981M       0  981M   0% /sys/fs/cgroup
+/dev/sda1                 180M     36M  132M  22% /boot
+tmpfs                     197M       0  197M   0% /run/user/0
+tmpfs                     197M       0  197M   0% /run/user/1000
+
+
+# lvmdiskscan
+Analyser toutles supports visibles par LVM2
+
+  /dev/VG-2/VL-3       [       2,73 TiB] 
+  /dev/sda1            [     190,00 MiB] 
+  /dev/VG-swap/VL-swap [       1,86 GiB] 
+  /dev/sda2            [       1,86 GiB] LVM physical volume
+  /dev/sda5            [     929,46 GiB] LVM physical volume
+  /dev/sdb1            [     931,51 GiB] LVM physical volume
+  /dev/sdc1            [     931,51 GiB] LVM physical volume
+  1 disk
+  2 partitions
+  0 LVM physical volume whole disks
+  4 LVM physical volumes
+
+# pvscan
+Analyser tous les disques volumes physiques :
+Résultat de la commande :
+
+
+  PV /dev/sda2   VG VG-swap         lvm2 [1,86 GiB / 0    free]
+  PV /dev/sda5   VG VG-2            lvm2 [929,46 GiB / 0    free]
+  PV /dev/sdb1   VG VG-2            lvm2 [931,51 GiB / 0    free]
+  PV /dev/sdc1   VG VG-2            lvm2 [931,51 GiB / 0    free]
+  Total: 4 [2,73 TiB] / in use: 4 [2,73 TiB] / in no VG: 0 [0   ]
+
+-- OK --
+
