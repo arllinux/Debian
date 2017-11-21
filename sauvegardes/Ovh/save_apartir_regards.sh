@@ -50,7 +50,7 @@ if [ $? = "0" ]
 	# Si le script précédent s'est bien déroulé,
 	# Lance la syncro 
   #	rsync -av -e "ssh -p 18525"	utilisateur@37.59.52.161:/home/utilisateur/archive.tar.bz2 .
-  # rsync -av --delete root@37.59.52.161:/home/sauvegardes/var/* /home/jpantinoux/save_nextcloud/Hjour.O
+  # rsync -av --delete root@37.59.52.161:/home/sauvegardes/* /home/jpantinoux/save_nextcloud/Hjour.O
   	rsync -av --delete $SERVEUR:$SOURCE $WAYSAVE$H.0 >> $logfile
 	      Date=$(date +%d-%m-%Y)
     		Heure=$(date +%T)
