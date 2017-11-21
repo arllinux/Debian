@@ -18,8 +18,8 @@ if [ $? = "0" ]
 	cat $CWD/../interfaces/etc/network/interfaces_freebox > /etc/network/interfaces
 	chmod 0644 /etc/network/interfaces
 	
-	service networking stop
-	service networking start
+#	service networking stop
+#	service networking start
 	
 	# Avant de lancer ce script ajuster le fichier /etc/udev/rules.d/70-persistant-net.rules
 	# Une fois les fichiers en place, ajuster les adresses IP

@@ -6,7 +6,7 @@
 # Dans /root/bin du serveur Regards
 # sauvegarde sur 10 jours ouvrables.
 
-DEST='/home/jpantinoux/save_nextcloud'
+DEST='/home/olivier/Regards/'
 D=jour
 H=Hjour
 n=10

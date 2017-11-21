@@ -26,14 +26,14 @@ if [ $USER != "root" ]
     cat $CWD/../bash/invite_root > /root/.bashrc
     
     echo ":: Configuration invite de commande pour les futurs utilisateurs."
-    cat $CWD/../bash/invite_users > /etc/skel/.bashrc
+    cat $CWD/../bash/invite_user > /etc/skel/.bashrc
     
     echo ":: Configuration invite de commande pour l'utilisateur courant."
-    cat $CWD/../bash/invite_users > /home/$nom/.bashrc
+    cat $CWD/../bash/invite_user > /home/$nom/.bashrc
     
     # Configuration de Vim
     echo ":: Configuration de Vim."
-    cat $CWD/../vim/vimrc.local > /etc/vim/vimrc.local
+    cat $CWD/../vim/etc/vim/vimrc.local > /etc/vim/vimrc.local
     chmod 0644 /etc/vim/vimrc.local
     
     # Mettre en place le fichier qui permet la validation des messages

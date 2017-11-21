@@ -27,17 +27,17 @@
 Date=$(date +%d-%m-%Y)
 Heure=$(date +%T)
 SERVEUR='root@37.59.52.161'
-SOURCE='/home/sauvegardes/var/*'
+SOURCE='/home/sauvegardes/*'
 logfile='/root/bin/logfile_resspa13.ovh.txt'
-WAYSAVE='/home/jpantinoux/save_nextcloud/'
+WAYSAVE='/home/olivier/Regards/'
 H='Hjour'
 
 # --\\\\\--
 
 # Le script vérifie si la machine B est connectée.
 
-		echo -e "Lancement sauvegarde à : $Heure le $Date" >> $logfile
-    echo -e "-----------------------------------------------------" >> $logfile
+	echo -e "Lancement sauvegarde à : $Heure le $Date" >> $logfile
+	echo -e "-----------------------------------------------------" >> $logfile
   ping -c 1 37.59.52.161 > /dev/null
 if [ $? = "0" ]
   then
@@ -57,12 +57,15 @@ if [ $? = "0" ]
 
 		echo -e "Sauvegarde terminée à  : $Heure le $Date" >> $logfile
 		echo -e "-----------------------------------------------------" >> $logfile
-	  		else
+		echo -e "-----------------------------------------------------" >> $logfile
+		else
 	  echo -e "\n!!!!! Le dossier Hjour.0 est absent\nSauvegarde interrompue à $Heure le $Date" >> $logfile
+	  echo -e "---------------------------------------------------------------" >> $logfile	
 	  echo -e "---------------------------------------------------------------" >> $logfile	
      fi			
    else
     echo -e "\n!!!!! Serveur inaccessible : échoué à $Heure le $Date" >> $logfile
+    echo -e "---------------------------------------------------------------" >> $logfile
     echo -e "---------------------------------------------------------------" >> $logfile
 fi
 exit 0
